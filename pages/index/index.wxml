@@ -1,0 +1,140 @@
+<!-- index.wxml -->
+<!-- 背景 -->
+<view wx:if="{{bgImg}}" class="index-cover"></view>
+<image wx:if="{{bgImg}}" class="background" src="{{bgImg}}"></image>
+<view style="height:{{statusBarHeight+44}}px;width:100%;display:flex;z-index:999;">
+  <view style="padding-top:{{statusBarHeight+8}}px;" class="welcome" hover-class="none" hover-stop-propagation="false" bindtap="goMine">
+    <view class="avatar">
+      <open-data type="userAvatarUrl"></open-data>
+    </view>
+    <view class='title'>
+      <view class="nick" hover-class="none" hover-stop-propagation="false">
+        <open-data type="userNickName"></open-data>
+      </view>
+      <view class="" hover-class="none" hover-stop-propagation="false">,欢迎你！</view>
+    </view>
+  </view>
+</view>
+<view class="container" wx:if="{{isReady}}">
+  <!-- 版本号 -->
+  <view class="version" bindtap="showVersion" style="margin-top:{{statusBarHeight+44}}px;">
+    1.0.0
+  </view>
+  <!-- 初始用户头像和名称 -->
+  <!-- <view class="userinfo">
+    <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
+    <block wx:else>
+      <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
+      <text class="userinfo-nickname">{{userInfo.nickName}}</text>
+    </block>
+  </view> -->
+  <!-- 主屏幕显示区域 -->
+  <view class="weather">
+
+    <view class="city">{{city}}</view>
+    <view class="nowinfo">{{weatherNow[0].wea}}</view>
+    <view class="tmt" hover-class="hover_tmt" bindtap="asked">{{now_temperature}}°</view>
+    <!-- 最上方的天气 -->
+    <image wx:if="{{isWeather}}" src="{{isWeather}}" class="sunny"></image>
+    <view class="today">
+      <view class="week">{{weatherNow[0].week}}</view>
+      <view class="today1">今天</view>
+      <view class="tmt1">
+        <view class="high">{{weatherNow[0].tem1}}</view>
+        <view class="low">{{weatherNow[0].tem2}}</view>
+      </view>
+    </view>
+  </view>
+  <!-- 轮播组件 -->
+  <swiper class="swiper" next-margin='0px' previous-margin="0px" display-multiple-items="4" easing-function="linear">
+    <block wx:for="{{hourly}}" wx:key="index1">
+      <swiper-item class="slide">
+        <view class="nowtime">{{item.day}}</view>
+        <image wx:if="{{item.wea.length>10}}" src="{{item.wea}}" class="slide-image" />
+        <view class="nowtmt">{{item.tem}}</view>
+      </swiper-item>
+    </block>
+  </swiper>
+  <!-- 最近7天的天气 -->
+  <view wx:if="{{weather[5].wea.length>10}}" style="position:absolute;margin-top:850rpx;z-index:100;  border-bottom:1rpx solid rgb(255, 255, 255, 0.5);">
+    <block wx:for="{{weather}}" wx:key="week">
+      <view class="future" bindtap="onWorking">
+        <view class="week">{{item.week}}</view>
+        <image class="img" src="{{item.wea}}"></image>
+        <view class="tmt1">
+          <view class="high">{{item.tem1}}</view>
+          <view class="low">{{item.tem2}}</view>
+        </view>
+      </view>
+    </block>
+  </view>
+  <!-- 今日详细概况 -->
+  <view style="position:absolute;margin-top:1220rpx;display:flex;justify-content:center;width:750rpx;z-index:100;flex-wrap:wrap;">
+    <view wx:for="{{weaInfo}}" wx:key="index">
+      <view class="todayInfo">
+        <view class="top">{{item.type}}</view>
+        <view class="bottom">{{item.data}}</view>
+      </view>
+    </view>
+  </view>
+  <!-- 生活指数等 -->
+  <view style="position:absolute;margin-top:1780rpx;width:100%;z-index:20;">
+    <i-grid class="grid">
+      <i-grid-item bindtap="shushi">
+        <i-grid-icon>
+          <image src="../../static/images/shushi.png" />
+        </i-grid-icon>
+        <i-grid-label>舒适度</i-grid-label>
+      </i-grid-item>
+      <i-grid-item bindtap="chuanyi">
+        <i-grid-icon>
+          <image src="../../static/images/chuanyi.png" />
+        </i-grid-icon>
+        <i-grid-label>穿衣</i-grid-label>
+      </i-grid-item>
+      <i-grid-item bindtap="ganmao">
+        <i-grid-icon>
+          <image src="../../static/images/ganmao.png" />
+        </i-grid-icon>
+        <i-grid-label>感冒</i-grid-label>
+      </i-grid-item>
+    </i-grid>
+    <i-grid class="grid">
+      <i-grid-item bindtap="yundong">
+        <i-grid-icon>
+          <image src="../../static/images/yundong.png" />
+        </i-grid-icon>
+        <i-grid-label>运动</i-grid-label>
+      </i-grid-item>
+      <i-grid-item bindtap="lvyou">
+        <i-grid-icon>
+          <image src="../../static/images/lvyou.png" />
+        </i-grid-icon>
+        <i-grid-label>旅游</i-grid-label>
+      </i-grid-item>
+      <i-grid-item bindtap="ziwaixian">
+        <i-grid-icon>
+          <image src="../../static/images/ziwaixian.png" />
+        </i-grid-icon>
+        <i-grid-label>紫外线</i-grid-label>
+      </i-grid-item>
+    </i-grid>
+  </view>
+</view>
+
+<!-- 左侧弹框-闭合 -->
+<view class="S_last_view" style="margin-top:{{statusBarHeight+12}}px" wx:if="{{isReady}}" bindtap="goBottom">
+  <image src="/static/images/star.png" style="position:absolute;height:40rpx;width:40rpx;left:48rpx;" />
+</view>
+
+<!-- 蒙层 -->
+<!-- <view class="cover" wx:if="{{isShow1||isShow2}}"></view> -->
+<!-- 授权组件 -->
+<!-- <login id='login' title='登录提示' content='小程序需要您的授权才能提供更好的服务哦' confirmText='点击登陆' bind:confirmEvent='confirmEvent' bind:bindGetUserInfo='bindGetUserInfo'>
+</login> -->
+<!-- 点我 -->
+ <image src="../../static/images/clickme.png" wx:if="{{!isNew&&isReady}}" style="position:absolute;height:74rpx;width:124rpx;top:{{statusBarHeight+44}}px;left:35rpx;z-index:20; opacity: 0.8;" />
+<!-- 轻提示组件 -->
+<i-toast id="toast" />
+<!-- loading组件 -->
+<i-spin fix wx:if="{{ spinShow }}"></i-spin>

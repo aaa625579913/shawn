@@ -1,0 +1,114 @@
+/* pages/mine/mine.wxss */
+
+.container {
+  width: 750rpx;
+  overflow-x: hidden;
+}
+
+.bg {
+  width: 750rpx;
+  height: 370rpx;
+  background: #37383f;
+  background-size: 750rpx 370rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  position: absolute;
+  top: 0rpx;
+  left: 0rpx;
+}
+
+.avatar {
+  overflow: hidden;
+  display: block;
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.5);
+  margin-bottom: 40rpx;
+}
+
+.title {
+  font-family: 'PingFang';
+  font-weight: bold;
+  font-size: 36rpx;
+  color: #fff;
+}
+
+/* 关于 */
+
+.middle {
+  margin-bottom: 40rpx;
+  box-shadow: 0rpx 0rpx 20rpx #e2e1e4;
+  background-color: white;
+  margin-top: 370rpx;
+  width: 100%;
+}
+
+.line {
+  width: 710rpx;
+  height: 1px;
+  background-color: #e5e5e5;
+  margin-left: 40rpx;
+}
+
+.left, .right {
+  display: flex;
+  align-items: center;
+}
+
+.right {
+  height: 116rpx;
+  margin-right: 14rpx;
+}
+
+.txt {
+  font-family: 'PingFang';
+  font-size: 34rpx;
+  color: #222;
+  margin-left: 20rpx;
+}
+
+.about {
+  width: 750rpx;
+  height: 116rpx;
+  display: flex;
+  justify-content: space-between;
+  padding-left: 40rpx;
+  align-items: center;
+  background-color: white;
+  box-sizing: border-box;
+}
+
+.hover_about {
+  transform: scale(0.99);
+}
+
+/* 赶工 */
+
+.working {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  bottom: 200rpx;
+  height: 400rpx;
+  width: 100%;
+}
+
+.working .img {
+  height: 128rpx;
+  width: 197rpx;
+  padding: 20rpx;
+}
+
+.working .text {
+  font-family: 'PingFang';
+  font-size: 50rpx;
+  color: #222;
+}
+
+.grid {
+  width: 750rpx;
+}

@@ -1,0 +1,556 @@
+/**index.wxss**/
+
+page {
+  width: 750rpx;
+  overflow-x: hidden;
+  font-family: 'PingFang SC';
+}
+
+.cover {
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.index-cover {
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  /* background-color: rgba(0, 0, 0, 0.05); */
+  background: linear-gradient(to bottom, #000, #fff);
+  opacity: 0.6;
+}
+
+.container {
+  height: 100vh;
+  width: 750rpx;
+}
+
+.background {
+  position: fixed;
+  height: 100vh;
+  width: calc(100vw + 150rpx);
+}
+
+.welcome {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  padding-left: 38rpx;
+  /* background: #37383f; */
+  box-sizing: border-box;
+  z-index: 1000;
+}
+
+.welcome .avatar {
+  overflow: hidden;
+  display: block;
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  border: 2rpx solid #acadb3;
+  margin-right: 24rpx;
+  box-sizing: border-box;
+}
+
+.title {
+  font-family: 'PingFang';
+  font-size: 28rpx;
+  color: #fff;
+  display: flex;
+  margin-top: 14rpx;
+  line-height: 28rpx;
+}
+
+.title .nick {
+  max-width: 224rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.top-info {
+  width: 750rpx;
+  height: 454rpx;
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  background: #37383f;
+}
+
+.top-info .info {
+  width: 438rpx;
+  height: 123rpx;
+  margin-top: 66rpx;
+}
+
+.userinfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.userinfo-avatar {
+  width: 128rpx;
+  height: 128rpx;
+  margin: 20rpx;
+  border-radius: 50%;
+}
+
+.userinfo-nickname {
+  color: #aaa;
+}
+
+.usermotto {
+  margin-top: 200px;
+}
+
+/**
+*屏幕中样式*
+  **/
+
+.weather {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  background: #37383f;
+}
+
+.weather .sunny {
+  height: 100rpx;
+  width: 100rpx;
+  position: absolute;
+  z-index: 10;
+}
+
+.weather .city {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100rpx;
+  width: 200rpx;
+  margin-top: 100rpx;
+  font-family: 'PingFang SC';
+  font-size: 38rpx;
+  color: #fff;
+  text-shadow: 10rpx 10rpx 12rpx rgba(37, 33, 27, 0.9);
+  z-index: 20;
+}
+
+.weather .nowinfo {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* border: 2rpx solid #acadb3; */
+  height: 100rpx;
+  width: 200rpx;
+  margin-top: 150rpx;
+  font-family: 'PingFang SC';
+  font-size: 28rpx;
+  font-weight: 300;
+  color: #fff;
+  z-index: 20;
+}
+
+.weather .tmt {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* border: 2rpx solid #acadb3; */
+  z-index: 10;
+  border-radius: 50rpx;
+  height: 200rpx;
+  width: 250rpx;
+  margin-top: 240rpx;
+  font-family: 'PingFang SC';
+  font-size: 120rpx;
+  font-weight: 400;
+  color: #fff;
+  text-shadow: 2rpx 2rpx 3rpx rgba(245, 242, 238, 0.2);
+  box-shadow: 10rpx 10rpx 12rpx rgba(37, 33, 27, 0.6);
+}
+
+.weather .hover_tmt {
+  transform: scale(0.95);
+}
+
+.weather .today {
+  position: absolute;
+  /* border: 1rpx solid #acadb3; */
+  height: 100rpx;
+  width: 750rpx;
+  display: flex;
+  margin-top: 500rpx;
+  z-index: 20;
+}
+
+.weather .today .week {
+  display: flex;
+  margin-left: 30rpx;
+  align-items: center;
+  font-family: 'PingFang SC';
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #fff;
+}
+
+.weather .today .today1 {
+  display: flex;
+  margin-left: 20rpx;
+  margin-top: 10rpx;
+  align-items: center;
+  font-family: 'PingFang SC';
+  font-size: 22rpx;
+  /* font-weight: lighter; */
+  color: #fff;
+}
+
+.weather .today .tmt1 {
+  /* position: absolute; */
+  margin-left: 288rpx;
+  display: flex;
+  align-items: center;
+  height: 100rpx;
+  width: 200rpx;
+  font-family: 'PingFang SC';
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #fff;
+}
+
+.weather .today .tmt1 .high {
+  display: flex;
+  padding: 30rpx;
+  font-family: 'PingFang SC';
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #fff;
+}
+
+.weather .today .tmt1 .low {
+  display: flex;
+  padding: 30rpx;
+  font-family: 'PingFang SC';
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #fff;
+}
+
+.swiper {
+  position: absolute;
+  margin-top: 600rpx;
+  width: 100%;
+  height: 250rpx;
+  z-index: 5;
+  /* border-color: rgb(255, 255, 255,0.5); */
+  border-top: 1rpx solid rgb(255, 255, 255, 0.5);
+  border-bottom: 1rpx solid rgb(255, 255, 255, 0.5);
+}
+
+.slide {
+  /* border: 2rpx solid #acadb3; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.slide-image {
+  width: 60rpx;
+  height: 60rpx;
+  padding: 20rpx;
+}
+
+.nowtime {
+  white-space: normal;
+  font-family: 'PingFang SC';
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #fff;
+  padding: 10rpx;
+}
+
+.nowtmt {
+  font-family: 'PingFang SC';
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #fff;
+  padding: 10rpx;
+}
+
+/* <!-- 最近7天的天气 --> */
+
+.future {
+  /* border-bottom: 1rpx solid #fff; */
+  width: 750rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+}
+
+.future .week {
+  /* position: absolute; */
+  display: flex;
+  margin-left: 30rpx;
+  align-items: center;
+  font-family: 'PingFang SC';
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #fff;
+}
+
+.future .img {
+  margin-left: 30rpx;
+  height: 40rpx;
+  width: 40rpx;
+}
+
+.future .tmt1 {
+  /* position: absolute; */
+  margin-left: 280rpx;
+  display: flex;
+  align-items: center;
+  width: 200rpx;
+  font-family: 'PingFang SC';
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #fff;
+}
+
+.future .tmt1 .high {
+  display: flex;
+  padding: 10rpx 30rpx;
+  font-family: 'PingFang SC';
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #fff;
+}
+
+.future .tmt1 .low {
+  display: flex;
+  padding: 10rpx 30rpx;
+  font-family: 'PingFang SC';
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #fff;
+}
+
+/* 今日情况 */
+
+.todayInfo {
+  height: 110rpx;
+  width: 340rpx;
+  border-bottom: 1rpx solid rgb(255, 255, 255, 0.5);
+}
+
+.todayInfo .top {
+  font-family: 'PingFang SC';
+  font-size: 20rpx;
+  color: #fff;
+  opacity: 0.6;
+  padding-top: 10rpx;
+}
+
+.todayInfo .bottom {
+  font-family: 'PingFang SC';
+  font-size: 46rpx;
+  color: #fff;
+  padding-bottom: 10rpx;
+}
+
+/* 左侧弹框 */
+
+.S_last_view {
+  display: flex;
+  align-items: center;
+  position: fixed;
+  height: 60rpx;
+  width: 120rpx;
+  left: -30rpx;
+  top: 184rpx;
+  z-index: 999;
+  /* background: rgba(255, 255, 255, 0.8); */
+  background: transparent;
+  box-shadow: 10rpx 10rpx 12rpx rgba(37, 33, 27, 0.4);
+  border-radius: 50rpx;
+}
+
+.S_last_btn {
+  margin-left: 56rpx;
+  font-family: 'PingFang SC';
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #483c1c;
+}
+
+.S_last {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  top: 184rpx;
+  height: 60rpx;
+  max-width: 643rpx;
+  left: -30rpx;
+  z-index: 1006;
+  border-radius: 50rpx;
+  background: linear-gradient(to right, #d5be84, #ecd9ad);
+  box-shadow: 10rpx 10rpx 12rpx rgba(37, 33, 27, 0.4);
+}
+
+.S_last_name {
+  display: flex;
+  align-items: center;
+  height: 60rpx;
+  max-width: 360rpx;
+  margin-left: 60rpx;
+  background: transparent;
+}
+
+.S_last_name .text {
+  font-family: 'PingFang SC';
+  font-size: 28rpx;
+  font-weight: bold;
+  max-width: 360rpx;
+  padding-right: 10rpx;
+  color: #483c1c;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.S_last .text1 {
+  position: absolute;
+  margin-left: 56rpx;
+  font-family: 'PingFang SC';
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #483c1c;
+}
+
+.S_last_X {
+  height: 80rpx;
+  width: 50rpx;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  border-radius: 50rpx;
+}
+
+/* <!-- 自定义modal --> */
+
+.modal {
+  position: fixed;
+  border: 4rpx solid rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.8);
+  height: 400rpx;
+  width: 400rpx;
+  top: 400rpx;
+  z-index: 9999;
+  border-radius: 50rpx;
+}
+
+.modal .modal_img {
+  position: fixed;
+  height: 400rpx;
+  width: 400rpx;
+  border-radius: 50rpx;
+}
+
+.modal .off {
+  height: 20rpx;
+  width: 20rpx;
+}
+
+.modal .modal_title {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  padding: 0rpx 15rpx;
+  top: 60rpx;
+  height: 80rpx;
+  width: 400rpx;
+  /* text-shadow: 2rpx 2rpx 3rpx rgba(37, 33, 27, 0.1); */
+}
+
+.modal .modal_title .star {
+  display: flex;
+  align-items: center;
+  padding-left: 10rpx;
+  height: 45rpx;
+  width: 45rpx;
+}
+
+.modal .modal_value {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  padding: 0rpx 15rpx;
+  top: 140rpx;
+  height: 80rpx;
+  width: 400rpx;
+  /* text-shadow: 2rpx 2rpx 3rpx rgba(37, 33, 27, 0.1); */
+}
+
+.modal .modal_value .hot {
+  display: flex;
+  align-items: center;
+  padding-left: 10rpx;
+  height: 50rpx;
+  width: 50rpx;
+}
+
+.modal .modal_text {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  padding: 0rpx 15rpx;
+  top: 200rpx;
+  height: 150rpx;
+  width: 390rpx;
+  /* text-shadow: 2rpx 2rpx 3rpx rgba(37, 33, 27, 0.1); */
+}
+
+.modal .modal_text .text {
+  word-break: break-all;
+}
+
+/* 版本号 */
+
+.version {
+  width: 100rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+  position: absolute;
+  top: 62rpx;
+  right: 42rpx;
+  color: #fff;
+  font-size: 22rpx;
+  font-weight: bold;
+  z-index: 10;
+  border-radius: 30rpx;
+  text-align: center;
+  border: 2rpx solid rgba(255, 255, 255, 0.8);
+  box-sizing: border-box;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+}
+
+/* 生活指数等 */
+
+.grid {
+  width: 750rpx;
+  /* border-top: 1rpx solid rgb(255, 255, 255, 0.5); */
+}

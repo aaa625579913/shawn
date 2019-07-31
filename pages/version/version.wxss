@@ -1,0 +1,7 @@
+/* pages/version/version.wxss */
+.line{
+  height: 1rpx;
+  width: 100vw;
+  margin-top: 20rpx;
+  background: #000;
+}

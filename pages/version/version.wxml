@@ -1,0 +1,21 @@
+<!--pages/version/version.wxml-->
+<view style="position:fixed;width:100%;z-index:999;height:{{statusBarHeight+44}}px;display:flex;justify-content: center;background:#e9d295;">
+  <view style="position:absolute;height:70rpx;width:70rpx;left:16rpx;top:{{statusBarHeight+4}}px;display:flex;align-items:center;justify-content:center;" bindtap="goback">
+    <image src='/static/images/back_b.png' style='width:21rpx;height:36rpx;left:28rpx;'></image>
+  </view>
+  <view style='position:absolute;top:{{statusBarHeight+8}}px;font-size:36rpx;font-weight:bold;z-index:999;'>
+    版本信息
+  </view>
+</view>
+<view style="padding-top:{{statusBarHeight+44}}px;">
+  <view style="font-size:40rpx;font-weight:500;padding-bottom:10rpx;">
+    1.0.0
+  </view>
+    <view style="font-size:34rpx;font-weight:400;">
+    初始化萌新版本，待更新
+  </view>
+      <view style="font-size:24rpx;font-weight:400;padding-top:20rpx;">
+    日期：2019/7/27
+  </view>
+  <view class="line"></view>
+</view>

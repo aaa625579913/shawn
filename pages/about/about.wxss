@@ -1,0 +1,57 @@
+/* pages/about/about.wxss */
+
+.container {
+  /* height: 100vh; */
+  width: 100vw;
+}
+
+.bottomInfo {
+  position: absolute;
+  text-align: center;
+  font-family: 'PingFangSC-Medium';
+  bottom: 60rpx;
+  color: #bdbdbd;
+  font-size: 24rpx;
+  line-height: 36rpx;
+}
+
+.contain {
+  position: absolute;
+  top:600rpx;
+  height: 120rpx;
+  width: 280rpx;
+  border: 4rpx solid #eff1f3;
+  border-radius: 20rpx;
+  display: flex;
+  justify-content: center;
+}
+
+.contain .wechat {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 348rpx;
+  border-top-right-radius: 10rpx;
+  border-bottom-right-radius: 10rpx;
+}
+
+.contain .wechat_click {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 348rpx;
+  border-top-right-radius: 10rpx;
+  border-bottom-right-radius: 10rpx;
+  background: #f9f9fa;
+  color: #000;
+  font-size: 28rpx;
+  font-family: 'PingFang SC';
+}
+
+.contain .wechat .text {
+  color: #000;
+  font-size: 28rpx;
+  font-family: 'PingFang SC';
+}

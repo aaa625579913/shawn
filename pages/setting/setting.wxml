@@ -1,0 +1,13 @@
+<!--pages/setting/setting.wxml-->
+<view style="width:100%;z-index:999;height:{{statusBarHeight+44}}px;display:flex;justify-content: center;background:#37383f;">
+    <view style="position:absolute;height:70rpx;width:70rpx;left:16rpx;top:{{statusBarHeight+4}}px;display:flex;align-items:center;justify-content:center;" bindtap="goback">
+        <image src='/static/images/back_w.png' style='width:21rpx;height:36rpx;left:28rpx;'></image>
+    </view>
+    <view style='position:absolute;top:{{statusBarHeight+8}}px;font-size:36rpx;font-weight:bold;z-index:999;color:white;'>
+        设置
+    </view>
+</view>
+
+<view class="container">
+
+</view>
