@@ -9,43 +9,51 @@
 </view>
 <view class="container">
   <view class='bg' style="margin-top:{{statusBarHeight+44}}px;">
-    <view class='avatar'>
-      <open-data type="userAvatarUrl"></open-data>
-      {{userInfo}}
-    </view>
-    <view class='title'>
-      <open-data type="userNickName"></open-data>
+    <image class='avatar' src='{{userInfo.avatarUrl || ""}}' bindtap="goLogin" />
+    <view class='title' bindtap="goLogin">
+      {{userInfo.nickName || '未登录'}}
     </view>
   </view>
   <!-- 关于 -->
   <view class="middle">
-    <view class="about" hover-class="hover_about" bindtap="goAbout">
+    <button class="about" bindtap="goAbout" bindtouchstart="goAboutStart"  bindtouchend="goAboutEnd" style="background:{{tap1?'rgba(0, 0, 0, 0.5)':''}}">
       <view class='left'>
         <image src='/static/images/about.png' style="width:48rpx;height:48rpx;"></image>
         <text class='txt'>关于</text>
       </view>
       <view class='right'>
         <text class='num'>{{viewNum}}</text>
-        <image class='arrow' src='/static/images/right.png' style="width:40rpx;height:40rpx;margin-right:10rpx;"></image>
+        <image class='arrow' src='/static/images/right.png' style="width:40rpx;height:40rpx;margin-left:30rpx;"></image>
       </view>
-    </view>
+    </button>
     <view class="line" hover-class="none" hover-stop-propagation="false"></view>
-        <view class="about" hover-class="hover_about" bindtap="goSetting">
+    <button class="about" hover-class="hover_about" open-type="contact" session-from="weapp" catchlongpress="longpress">
+      <view class='left'>
+        <image src='/static/images/wechat.png' style="width:48rpx;height:48rpx;"></image>
+        <text class='txt'>联系作者</text>
+      </view>
+      <view class='right'>
+        <text class='num'>{{viewNum}}</text>
+        <image class='arrow' src='/static/images/right.png' style="width:40rpx;height:40rpx;margin-left:30rpx;"></image>
+      </view>
+    </button>
+    <view class="line" hover-class="none" hover-stop-propagation="false"></view>
+    <button class="about" hover-class="hover_about" bindtap="goSetting">
       <view class='left'>
         <image src='/static/images/setting.png' style="width:48rpx;height:48rpx;"></image>
         <text class='txt'>设置</text>
       </view>
       <view class='right'>
         <text class='num'>{{viewNum}}</text>
-        <image class='arrow' src='/static/images/right.png' style="width:40rpx;height:40rpx;margin-right:10rpx;"></image>
+        <image class='arrow' src='/static/images/right.png' style="width:40rpx;height:40rpx;margin-left:30rpx;"></image>
       </view>
-    </view>
+    </button>
 
   </view>
 
   <!-- 赶工中 -->
-  <view class="working">
+  <!-- <view class="working">
     <image class="img" src="/static/images/working.png"></image>
     <view class="text">施工中...</view>
-  </view>
+  </view> -->
 </view>

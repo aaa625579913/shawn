@@ -1,6 +1,8 @@
 // pages/mine/mine.js
 //获取应用实例
 const app = getApp()
+const db = wx.cloud.database()
+const _ = db.command
 Page({
 
   /**
@@ -8,20 +10,42 @@ Page({
    */
   data: {
     statusBarHeight: getApp().globalData.statusBarHeight,
-    data:''
+    data: '',
+    isLogin: false,
+    userInfo: null,
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
+  onLoad: function(options) {
     var that = this;
   },
-
-  goAbout(){
-wx.navigateTo({
-  url: '../about/about',
-})
+  onShow() {
+    let _isLogin = wx.getStorageSync('isLogin');
+    if (!_isLogin) {
+      let _duration = 1500;
+      wx.showToast({
+        title: '您还未登录,请先登录',
+        icon: 'none',
+        duration: _duration
+      })
+      // setTimeout(() => {
+      //   wx.navigateTo({
+      //     url: '../login/login',
+      //   })
+      // }, _duration)
+    } else {
+      this.setData({
+        isLogin: true,
+        userInfo: wx.getStorageSync('userInfo')
+      })
+    }
+  },
+  goAbout() {
+    wx.navigateTo({
+      url: '../about/about',
+    })
   },
   goSetting() {
     wx.navigateTo({
@@ -56,9 +80,56 @@ wx.navigateTo({
   //     }
   //   })
   // },
-  goback(){
-    wx.navigateTo({
-      url:'/pages/index/index'
+  goback() {
+    wx.navigateBack({})
+  },
+  goLogin() {
+    var that = this;
+    if (wx.getStorageSync('isLogin')) {
+      wx.showToast({
+        title: '已经登陆过啦',
+        icon: 'none'
+      })
+    } else {
+      wx.navigateTo({
+        url: '../login/login',
+      })
+    }
+  },
+  goAboutStart() {
+    var that = this;
+    that.setData({
+      tap1: true
     })
-  }
+  },
+  goAboutEnd() {
+    var that = this;
+    that.setData({
+      tap1: false
+    })
+  },
+  goCanvasStart() {
+    var that = this;
+    that.setData({
+      tap2: true
+    })
+  },
+  goCanvasEnd() {
+    var that = this;
+    that.setData({
+      tap2: false
+    })
+  },
+  goCanvasStart() {
+    var that = this;
+    that.setData({
+      tap3: true
+    })
+  },
+  goCanvasEnd() {
+    var that = this;
+    that.setData({
+      tap3: false
+    })
+  },
 })

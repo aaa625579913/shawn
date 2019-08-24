@@ -1,0 +1,23 @@
+<!--miniprogram/pages/mine/defriendList/defriendList.wxml-->
+<view style="position:fixed;width:100%;z-index:999;height:{{statusBarHeight+44}}px;display:flex;justify-content: center;background:#37383f;">
+  <view style="position:absolute;height:70rpx;width:70rpx;left:16rpx;top:{{statusBarHeight+4}}px;display:flex;align-items:center;justify-content:center;" bindtap="goback">
+    <image src='/static/images/back_w.png' style='width:21rpx;height:36rpx;left:28rpx;'></image>
+  </view>
+  <view style='position:absolute;top:{{statusBarHeight+8}}px;color:white;font-size:36rpx;font-weight:bold;z-index:999;'>
+    黑名单列表
+  </view>
+</view>
+
+<view class="list-block" wx:if="{{listData.length !== 0}}">
+  <view class="item-block plr30 border-bottom" wx:for="{{listData}}" wx:key="{{index}}">
+    <view class="user-block">
+      <image class='userImg mr10' src='{{item.avatarUrl}}'></image>
+      <view class="nickname">{{item.nickName}}</view>
+    </view>
+
+    <button class="cancel-btn" data-openid="{{item.defriendOpenid}}" catchtap='unDefriend'>取消拉黑</button>
+  </view>
+</view>
+<view class="tips" wx:else>
+  暂无黑名单
+</view>

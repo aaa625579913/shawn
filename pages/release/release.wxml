@@ -1,0 +1,40 @@
+<!--miniprogram/pages/index/release/release.wxml-->
+<view style="position:fixed;width:100%;z-index:999;height:{{statusBarHeight+44}}px;display:flex;justify-content: center;background:#37383f;">
+  <view style="position:absolute;height:70rpx;width:70rpx;left:16rpx;top:{{statusBarHeight+4}}px;display:flex;align-items:center;justify-content:center;" bindtap="goback">
+    <image src='/static/images/back_w.png' style='width:21rpx;height:36rpx;left:28rpx;'></image>
+  </view>
+  <view style='position:absolute;top:{{statusBarHeight+8}}px;color:white;font-size:36rpx;font-weight:bold;z-index:999;'>
+    编辑
+  </view>
+</view>
+
+<view class="release" wx:if="{{isRelease}}" style="padding-top:{{statusBarHeight+44}}px;">
+  <form bindsubmit="onSubmit" bindreset="formReset">
+    <view class="feedback-block bgff">
+      <view class=" feedback-textarea-block">
+        <textarea class="feedback-textarea" maxlength="{{maxlength}}" name="Message" placeholder='说点什么吧~' placeholder-style='color:#9f9f9f; line-height: 48rpx; font-size:36rpx' bindinput="bindTextarea"></textarea>
+        <view class="word-nums">{{currLength}}/{{maxlength}}</view>
+      </view>
+    </view>
+    <view class="upload-block mt10 bgff">
+      <view class="upload-title">上传图片
+        <view class="upload-tips">（长按图片删除）</view>
+      </view>
+      <view class="upload-list">
+        <image class="upload-img" mode="aspectFill" wx:for="{{imgList}}" wx:key="{{index}}" src="{{item}}" data-index="{{index}}" data-curr-url="{{item}}" catchtap="previewImage" catchlongpress="longpressImage"></image>
+        <view class="upload-btn justify-align-center" hover-class='button-hover' catchtap="chooseImage">
+          <image class="plus-icon" mode="aspectFill" src="../../static/images/add.png"></image>
+        </view>
+      </view>
+    </view>
+
+    <!-- 提交按钮 -->
+    <button hover-class='button-hover' disabled="{{disabled}}" class="main-submit-btn submit-info" formType="submit">提交</button>
+  </form>
+      <i-cell-group class="setting">
+      <i-cell title="匿名功能">
+        <i-switch value="{{noName}}" bind:change="onChange" slot="footer">
+        </i-switch>
+      </i-cell>
+    </i-cell-group>
+</view>

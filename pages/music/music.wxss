@@ -1,0 +1,91 @@
+/* 音频start */
+.container{
+  background: linear-gradient(to bottom, #000, #fff);
+  height: 100vh;
+  width: 100wh;
+
+}
+
+.audioBox{}
+.audioBox>.top{
+  text-align: center;
+}
+.audioBox>.top>image{
+  width: 300rpx;
+  height: 300rpx;
+  border-radius: 8rpx;
+  /* box-shadow: 2rpx 2rpx 4rpx 2rpx #D4D4D4; */
+}
+.audioBox>.top>.top_title{
+  font-size: 32rpx;
+  font-weight: bold;
+  margin: 36rpx 0 12rpx;
+}
+.audioBox>.top>.price{
+  font-size: 26rpx;
+  color: #a0a0a0;
+}
+.progress{
+  margin-top: 53rpx;
+}
+.progress>.time {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 20rpx;
+}
+.progress>.time>text{
+  font-size: 26rpx;
+  color: #a0a0a0;
+}
+.control{
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20rpx 0 56rpx;
+}
+.control .stateBtn {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 94rpx;
+  height: 94rpx;
+  border-radius: 50%;
+  border: 4rpx solid #242424;
+  text-align: center;
+  margin: 0 60rpx;
+}
+
+.audioBox>.bottom {
+  
+}
+.audioCover {
+  position: absolute;
+  width: 94rpx;
+  height: 94rpx;
+  top: 0;
+  left: 0;
+  background-color: transparent;
+  z-index: 9998;
+}
+/* 音频end */
+
+.musicImg{
+  height: 100%;
+  width: 100%;
+}
+
+.start{
+  animation: music-rotate 4s linear infinite;
+}
+/* 旋转动画 */
+@keyframes music-rotate {
+ 0% {
+  transform: rotateZ(0deg);
+ }
+  
+ 100% {
+  transform: rotateZ(360deg);
+ }
+}

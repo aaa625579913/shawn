@@ -5,13 +5,26 @@
     "pages/mine/mine",
     "pages/version/version",
     "pages/about/about",
-    "pages/setting/setting"
+    "pages/setting/setting",
+    "pages/canvas/canvas",
+    "pages/hourly/hourly",
+    "pages/hourly1/hourly1",
+    "pages/login/login",
+    "pages/release/release",
+    "pages/public/public",
+    "pages/defriendList/defriendList",
+    "dist/grid-label-N/index",
+    "pages/music/music",
+    "pages/search/search"
   ],
   "permission": {
     "scope.userLocation": {
-      "desc": "你的位置信息将用于小程序位置接口的效果展示"
+      "desc": "当前只用于获取实时天气"
     }
   },
+  "requiredBackgroundModes": [
+    "audio"
+  ],
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",

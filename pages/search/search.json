@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "list-html": "/components/wx-index-list/wx-index-list"
+  },
+  "disableScroll": true
+
+}

@@ -8,7 +8,8 @@
 </view>
 <view class="container">
   <view style="padding-top:{{statusBarHeight+44}}px;display:flex;align-items:center;justify-content:center;">
-    <view>这个人很懒，并没有留下什么东西~</view>
+    <!-- <view>这个人很懒，并没有留下什么东西</view> -->
+    <view>不知道说些什么，祝大家早日暴富吧！</view>
     <view style="position:absolute;font-size:38rpx;font-weight:bold;top:500rpx;">联系作者</view>
     <view class="contain">
       <view class="{{iswechatclick?'wechat_click':'wechat'}}" bindtouchstart="bindtouchstart1" bindtouchend="bindtouchend1">

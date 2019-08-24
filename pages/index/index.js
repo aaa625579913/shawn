@@ -1,6 +1,8 @@
 //index.js
 var amapFile = require('../../libs/amap-wx.js');
 var util = require("../../utils/util.js")
+const db = wx.cloud.database()
+const _ = db.command;
 
 var markersData = {
   latitude: '', //纬度
@@ -42,14 +44,25 @@ Page({
     pres: '', //	大气压强	1020
     vis: '', //能见度，默认单位：公里	10
     cloud: '', //云量	23
+    sunny: 0,
+    rainyA: 0,
+    rainyB: 0,
+    sandstorm: 0,
+    cloudy: 0,
     weaInfo: [],
     motto: 'Hello World',
-    userInfo: {},
     hasUserInfo: false,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
     isiphone: app.globalData.isIphoneX,
     spinShow: false, //加载组件
-    isNew: '' //是否为第一次进入
+    isNew: '', //是否为第一次进入
+    isToast: false, //是否显示toast
+    userInfo: '', //用户信息
+    isRelease: false,
+    isBlack: false,
+    timer: '', //定时器名字
+    countDownNum: '0', //计时器初始值
+
   },
   //事件处理函数
   bindViewTap: function() {
@@ -57,11 +70,47 @@ Page({
       url: '../logs/logs'
     })
   },
+  /*定时器*/
+  countDown: function() {
+    let that = this;
+    let countDownNum = that.data.countDownNum;
+    that.setData({
+      timer: setInterval(function() {
+        countDownNum++;
+        that.setData({
+          countDownNum: countDownNum
+        })
+        if (that.data.countDownNum == 5 && that.data.spinShow) {
+          $Toast({
+            content: '网络似乎出了点小差'
+          });
+        } else if (that.data.countDownNum == 10 && that.data.spinShow) {
+          clearInterval(that.data.timer);
+          $Toast({
+            content: '请检查一下是否开启了微信地理位置授权'
+          });
+        } else if (that.data.countDownNum > 10) {
+          clearInterval(that.data.timer);
+        }
+        console.log("conutDownNum", countDownNum)
+      }, 1000)
+    })
+  },
   /*
   页面加载函数
   */
-  onLoad: function() {
+  onLoad: function(options) {
     var that = this;
+    var detailCity = options.detailCity ? options.detailCity : null;
+    if (detailCity){
+      that.setData({
+        detailCity: detailCity
+      })
+    }
+    that.setData({
+      spinShow: true,
+    })
+    that.countDown();
     // that.getLocationInfo();
     // that.getLocationInfo();
 
@@ -73,38 +122,55 @@ Page({
     // })
     // console.log(date);
   },
+
   onShow() {
     var that = this;
-    that.checkLocation();
-    that.setData({
-      spinShow: true
-    })
 
-    // if ((that.data.time > 18 && that.data.time <= 21)) {
-    //   that.setData({
-    //     bgImg: '../../static/images/2.png'
-    //   })
-    // } else if ((that.data.time >= 15 && that.data.time <= 18)) {
-    //   that.setData({
-    //     bgImg: 'https://shawn-weather-1258489802.cos.ap-shenzhen-fsi.myqcloud.com/1.png'
-    //   })
-    // } else if ((that.data.time >= 0 && that.data.time <= 6) || (that.data.time > 21 && that.data.time <= 24)) {
-    //   that.setData({
-    //     bgImg: '../../static/images/21-24.png'
-    //   })
-    // } else {
-    //   that.setData({
-    //     bgImg: '../../static/images/demo.png'
-    //   })
-    // }
+    that.onServices();
+    that.checkLocation();
+    const switch1 = wx.getStorageSync('switch1')
     const isNew = wx.getStorageSync('isNew')
+    let _userInfo = wx.getStorageSync('userInfo');
+    if (_userInfo) {
+      this.setData({
+        userInfo: _userInfo
+      })
+    }
     //获取isNew信息
     this.setData({
-      isNew: isNew
+      isNew: isNew,
+      switch1: switch1
     })
   },
   onReady() {
+    var that = this;
     this.login = this.selectComponent("#login");
+
+
+  },
+
+  onShareAppMessage: function(res) {
+    return {
+      title: '河马Shawn',
+      path: '/pages/index/index',
+      success: function() {},
+      fail: function() {}
+    }
+  },
+  onServices() {
+    db.collection('services').get().then(res => {
+      if (res.data.length) {
+        this.setData({
+          isRelease: res.data[0].isRelease
+        })
+
+      } else {
+        this.setData({
+          isRelease: false
+        })
+        console.log("1111111", res.data.length)
+      }
+    })
   },
   //s
   bgChange() {
@@ -113,40 +179,50 @@ Page({
     if (that.data.weatherNow[0]) {
       if (that.data.weatherNow[0].wea.search("雨") != -1) {
         that.setData({
-          bgImg: 'https://shawn-weather-1258489802.cos.ap-shenzhen-fsi.myqcloud.com/8.png'
+          bgImg: 'https://shawn-weather-1258489802.cos.ap-shenzhen-fsi.myqcloud.com/newWeather/night2.jpg',
+          isBlack: true
         })
       } else {
         if ((that.data.time >= 0 && that.data.time < 6)) {
           that.setData({
-            bgImg: 'https://shawn-weather-1258489802.cos.ap-shenzhen-fsi.myqcloud.com/3.png'
+            bgImg: 'https://shawn-weather-1258489802.cos.ap-shenzhen-fsi.myqcloud.com/newWeather/night.jpg',
+            isBlack: true
+
           })
         } else if ((that.data.time >= 6 && that.data.time < 9)) {
           that.setData({
-            bgImg: 'https://shawn-weather-1258489802.cos.ap-shenzhen-fsi.myqcloud.com/7.png'
+            bgImg: 'https://shawn-weather-1258489802.cos.ap-shenzhen-fsi.myqcloud.com/newWeather/sunny2.jpg',
+            isBlack: false
           })
         } else if ((that.data.time >= 9 && that.data.time < 12)) {
           that.setData({
-            bgImg: 'https://shawn-weather-1258489802.cos.ap-shenzhen-fsi.myqcloud.com/6.png'
+            bgImg: 'https://shawn-weather-1258489802.cos.ap-shenzhen-fsi.myqcloud.com/newWeather/sunny2.jpg',
+            isBlack: false
           })
         } else if ((that.data.time >= 12 && that.data.time < 14)) {
           that.setData({
-            bgImg: 'https://shawn-weather-1258489802.cos.ap-shenzhen-fsi.myqcloud.com/4.png'
+            bgImg: 'https://shawn-weather-1258489802.cos.ap-shenzhen-fsi.myqcloud.com/newWeather/sunny2.jpg',
+            isBlack: false
           })
         } else if ((that.data.time >= 14 && that.data.time < 16)) {
           that.setData({
-            bgImg: 'https://shawn-weather-1258489802.cos.ap-shenzhen-fsi.myqcloud.com/5.png'
+            bgImg: 'https://shawn-weather-1258489802.cos.ap-shenzhen-fsi.myqcloud.com/newWeather/sunny2.jpg',
+            isBlack: false
           })
         } else if ((that.data.time >= 16 && that.data.time < 18)) {
           that.setData({
-            bgImg: 'https://shawn-weather-1258489802.cos.ap-shenzhen-fsi.myqcloud.com/2.png'
+            bgImg: 'https://shawn-weather-1258489802.cos.ap-shenzhen-fsi.myqcloud.com/newWeather/sunny2.jpg',
+            isBlack: false
           })
         } else if ((that.data.time >= 18 && that.data.time < 21)) {
           that.setData({
-            bgImg: 'https://shawn-weather-1258489802.cos.ap-shenzhen-fsi.myqcloud.com/9.png'
+            bgImg: 'https://shawn-weather-1258489802.cos.ap-shenzhen-fsi.myqcloud.com/newWeather/night.jpg',
+            isBlack: true
           })
         } else if ((that.data.time >= 21 && that.data.time <= 24)) {
           that.setData({
-            bgImg: 'https://shawn-weather-1258489802.cos.ap-shenzhen-fsi.myqcloud.com/1.png'
+            bgImg: 'https://shawn-weather-1258489802.cos.ap-shenzhen-fsi.myqcloud.com/newWeather/night.jpg',
+            isBlack: true
           })
         }
       }
@@ -196,27 +272,6 @@ Page({
       $Toast.hide();
     }, 5000);
   },
-  bindGetUserInfo: function() {
-    // 用户点击授权后，这里可以做一些登陆操作
-    // this.login();
-    var that = this;
-    console.log("点击成功")
-    wx.getUserInfo({
-      success: res => {
-        this.setData({
-          userInfo: res.userInfo,
-          hasUserInfo: true,
-          loginYet: true
-        })
-        app.globalData.userInfo = that.data.userInfo;
-        console.log("用户", app.globalData.userInfo)
-        wx.setStorage({
-          key: 'userInfo',
-          data: that.data.userInfo,
-        })
-      }
-    })
-  },
   checkLocation() {
     let that = this;
     //选择位置，需要用户授权
@@ -240,6 +295,7 @@ Page({
     })
   },
   showSettingToast: function(e) {
+    var that = this;
     wx.showModal({
       title: '提示！',
       confirmText: '去设置',
@@ -311,6 +367,11 @@ Page({
   getWeatherInfo() {
     var that = this;
     //天气请求-深圳
+    if(that.data.detailCity!=null){
+      that.setData({
+        city: that.data.detailCity
+      })
+    }
     wx.request({
       url: 'https://free-api.heweather.net/s6/weather?location=' + that.data.city + '&key=42ca8385e1ac4360939a3ff8f584e619',
       success(res) {
@@ -388,6 +449,7 @@ Page({
         that.setData({
             weather: weatherChange,
             weatherNow: weatherNow,
+            model: res.data.data,
             hourly: res.data.data[0].hours
           },
           setTimeout(function() {
@@ -396,6 +458,7 @@ Page({
         console.log("weatherNow", that.data.weatherNow)
         console.log("hourly", that.data.hourly)
         console.log("weather", that.data.weather)
+        console.log("model", that.data.model)
       },
       fail(res) {
         console.log("fail", res)
@@ -415,7 +478,7 @@ Page({
     this.setData({
       time: TIME,
     });
-    console.error("现在的时间", that.data.time)
+    console.error("现在的时间", flag)
     if (flag.search("雨") != -1) {
       that.setData({
         isWeather: '/static/images/rainy4.png'
@@ -430,7 +493,6 @@ Page({
           isWeather: '/static/images/cloudy-sun.png'
         })
       }
-
     } else if (flag.search("阴") != -1) {
       that.setData({
         isWeather: '/static/images/cloudy1.png'
@@ -445,7 +507,12 @@ Page({
           isWeather: '/static/images/sun.png'
         })
       }
+    } else {
+      that.setData({
+        isWeather: '/static/images/cloudy1.png'
+      })
     }
+    console.log("isWeather", that.data.isWeather)
     for (var i = 0; i < that.data.hourly.length; i++) {
       let wea = that.data.hourly[i].wea.slice(0, 4);
       console.log("wea", wea)
@@ -453,10 +520,10 @@ Page({
         that.setData({
           imgflag: '/static/images/rain-light.png'
         })
-      } else if (wea.search("中雨") != -1) {       
-          that.setData({
-            imgflag: '/static/images/rain.png'
-          })
+      } else if (wea.search("中雨") != -1) {
+        that.setData({
+          imgflag: '/static/images/rain.png'
+        })
       } else if (wea.search("大雨") != -1) {
         that.setData({
           imgflag: '/static/images/rain-heavy.png'
@@ -469,36 +536,75 @@ Page({
         that.setData({
           imgflag: '/static/images/rain-storm.png'
         })
-      }else if (wea.search("晴") != -1) {  
-        if ((that.data.time >= 0 && that.data.time < 6) || (that.data.time >= 18 && that.data.time <= 24)) {
-          that.setData({
-            imgflag: '/static/images/sunny.png'
-          }) 
-        }else{
-          that.setData({
-            imgflag: '/static/images/sunny-night.png'
-          })
-        }               
+      } else if (wea.search("晴") != -1) {
+        if (that.data.hourly.length == 4) {
+          if (i >= 0 && i <= 3) {
+            that.setData({
+              imgflag: '/static/images/sunny-night.png'
+            })
+          } else {
+            that.setData({
+              imgflag: '/static/images/sunny.png'
+            })
+          }
+        } else {
+          if (i >= 4 && i <= 7) {
+            that.setData({
+              imgflag: '/static/images/sunny-night.png'
+            })
+          } else {
+            that.setData({
+              imgflag: '/static/images/sunny.png'
+            })
+          }
+        }
+
       } else if (wea.search("云") != -1) {
-        if ((that.data.time >= 0 && that.data.time < 6) || (that.data.time >= 18 && that.data.time <= 24)) {
-          that.setData({
-            imgflag: '/static/images/cloudy-sunny.png'
-          })
+        if (that.data.hourly.length == 4) {
+          if (i >= 0 && i <= 3) {
+            that.setData({
+              imgflag: '/static/images/cloudy-sunny-night.png'
+            })
+          } else {
+            that.setData({
+              imgflag: '/static/images/cloudy-sunny.png'
+            })
+          }
         } else {
-          that.setData({
-            imgflag: '/static/images/cloudy-sunny-night.png'
-          })
+          if (i >= 4 && i <= 7) {
+            that.setData({
+              imgflag: '/static/images/cloudy-sunny-night.png'
+            })
+          } else {
+            that.setData({
+              imgflag: '/static/images/cloudy-sunny.png'
+            })
+          }
         }
+
       } else if (wea.search("阴") != -1) {
-        if ((that.data.time >= 0 && that.data.time < 6) || (that.data.time >= 18 && that.data.time <= 24)) {
-          that.setData({
-            imgflag: '/static/images/cloudy-sunny.png'
-          })
+        if (that.data.hourly.length == 4) {
+          if (i >= 0 && i <= 3) {
+            that.setData({
+              imgflag: '/static/images/cloudy-sunny-night.png'
+            })
+          } else {
+            that.setData({
+              imgflag: '/static/images/cloudy-sunny.png'
+            })
+          }
         } else {
-          that.setData({
-            imgflag: '/static/images/cloudy-sunny-night.png'
-          })
+          if (i >= 4 && i <= 7) {
+            that.setData({
+              imgflag: '/static/images/cloudy-sunny-night.png'
+            })
+          } else {
+            that.setData({
+              imgflag: '/static/images/cloudy-sunny.png'
+            })
+          }
         }
+
       } else if (wea.search("尘") != -1) {
         that.setData({
           imgflag: '/static/images/sandstorm.png'
@@ -517,7 +623,7 @@ Page({
     that.setData({
       hourly: that.data.hourly
     })
-    console.error(that.data.hourly)
+    console.error("这里是hourly", that.data.hourly)
     for (var i = 0; i < that.data.weather.length; i++) {
       let wea = that.data.weather[i].wea.slice(0, 4);
       console.log("wea-weather", wea)
@@ -544,31 +650,31 @@ Page({
       } else if (wea.search("晴") != -1) {
         if ((that.data.time >= 0 && that.data.time < 6) || (that.data.time >= 18 && that.data.time <= 24)) {
           that.setData({
-            imgSix: '/static/images/sunny.png'
+            imgSix: '/static/images/sunny-night.png'
           })
         } else {
           that.setData({
-            imgSix: '/static/images/sunny-night.png'
+            imgSix: '/static/images/sunny.png'
           })
         }
       } else if (wea.search("云") != -1) {
         if ((that.data.time >= 0 && that.data.time < 6) || (that.data.time >= 18 && that.data.time <= 24)) {
           that.setData({
-            imgSix: '/static/images/cloudy-sunny.png'
+            imgSix: '/static/images/cloudy-sunny-night.png'
           })
         } else {
           that.setData({
-            imgSix: '/static/images/cloudy-sunny-night.png'
+            imgSix: '/static/images/cloudy-sunny.png'
           })
         }
       } else if (wea.search("阴") != -1) {
         if ((that.data.time >= 0 && that.data.time < 6) || (that.data.time >= 18 && that.data.time <= 24)) {
           that.setData({
-            imgSix: '/static/images/cloudy-sunny.png'
+            imgSix: '/static/images/cloudy-sunny-night.png'
           })
         } else {
           that.setData({
-            imgSix: '/static/images/cloudy-sunny-night.png'
+            imgSix: '/static/images/cloudy-sunny.png'
           })
         }
       } else if (wea.search("尘") != -1) {
@@ -584,124 +690,6 @@ Page({
           imgSix: '/static/images/sandstorm.png'
         })
       }
-      // switch (wea) {
-      //   case "晴":
-      //     {
-      //       that.setData({
-      //         imgSix: '/static/images/sun.png'
-      //       })
-      //       break;
-      //     }
-      //   case "小雨":
-      //     {
-      //       that.setData({
-      //         imgSix: '/static/images/rainy1.png'
-      //       })
-      //       break;
-      //     }
-      //   case "中雨":
-      //     {
-      //       that.setData({
-      //         imgSix: '/static/images/rainy2.png'
-      //       })
-      //       break;
-      //     }
-      //   case "中雨转雷阵雨":
-      //     {
-      //       that.setData({
-      //         imgSix: '/static/images/rainy2.png'
-      //       })
-      //       break;
-      //     }
-      //   case "大雨":
-      //     {
-      //       that.setData({
-      //         imgSix: '/static/images/rainy3.png'
-      //       })
-      //       break;
-      //     }
-      //   case "大雨转暴雨":
-      //     {
-      //       that.setData({
-      //         imgSix: '/static/images/rainy3.png'
-      //       })
-      //       break;
-      //     }
-      //   case "阵雨":
-      //     {
-      //       that.setData({
-      //         imgSix: '/static/images/rainy1.png'
-      //       })
-      //       break;
-      //     }
-      //   case "暴雨":
-      //     {
-      //       that.setData({
-      //         imgSix: '/static/images/rainy4.png'
-      //       })
-      //       break;
-      //     }
-      //   case "大暴雨":
-      //     {
-      //       that.setData({
-      //         imgSix: '/static/images/rainy4.png'
-      //       })
-      //       break;
-      //     }
-      //   case "暴雨转雷阵雨":
-      //     {
-      //       that.setData({
-      //         imgSix: '/static/images/rainy4.png'
-      //       })
-      //       break;
-      //     }
-      //   case "暴雨转中雨":
-      //     {
-      //       that.setData({
-      //         imgSix: '/static/images/rainy2.png'
-      //       })
-      //       break;
-      //     }
-      //   case "雷阵雨":
-      //     {
-      //       that.setData({
-      //         imgSix: '/static/images/rainy4.png'
-      //       })
-      //       break;
-      //     }
-      //   case "多云":
-      //     {
-      //       that.setData({
-      //         imgSix: '/static/images/cloudy.png'
-      //       })
-      //       break;
-      //     }
-      //   case "阴":
-      //     {
-      //       that.setData({
-      //         imgSix: '/static/images/cloudy.png'
-      //       })
-      //       break;
-      //     }
-      //   case "雾":
-      //     {
-      //       that.setData({
-      //         imgSix: '/static/images/cloudy.png'
-      //       })
-      //       break;
-      //     }
-      //   case "霾":
-      //     {
-      //       that.setData({
-      //         imgSix: '/static/images/cloudy.png'
-      //       })
-      //       break;
-      //     }
-      //   default:
-      //     {
-      //       break;
-      //     }
-      // }
       that.data.weather[i].wea = that.data.imgSix;
     }
     that.setData({
@@ -714,14 +702,19 @@ Page({
       })
     }, 1000)
   },
-  // getUserInfo: function (e) {
-  //   console.log(e)
-  //   app.globalData.userInfo = e.detail.userInfo
-  //   this.setData({
-  //     userInfo: e.detail.userInfo,
-  //     hasUserInfo: true
-  //   })
-  // },
+  onServices() {
+    db.collection('services').get().then(res => {
+      if (res.data.length) {
+        this.setData({
+          isRelease: res.data[0].isRelease
+        })
+      } else {
+        this.setData({
+          isRelease: false
+        })
+      }
+    })
+  },
   //点击头像昵称栏跳到我的页面
   goMine: function() {
     let that = this;
@@ -800,9 +793,189 @@ Page({
   //嘱咐
   asked() {
     var that = this;
-    $Toast({
-      content: '注意防晒噢~'
-    });
+    var random = Math.floor(Math.random() * 24);
+    switch (random) {
+      case 0:
+        {
+          $Toast({
+            content: '不是没你不行，只是有你更好'
+          });
+          break;
+        }
+      case 1:
+        {
+          $Toast({
+            content: '作者好帅啊'
+          });
+          break;
+        }
+      case 2:
+        {
+          $Toast({
+            content: '出门总要带把伞，一是遮阳，二是避雨'
+          });
+          break;
+        }
+      case 3:
+        {
+          $Toast({
+            content: '背景图片会随着时间的变化而变化哦'
+          });
+          break;
+        }
+      case 4:
+        {
+          $Toast({
+            content: '月光不抱你，时光摧毁你，但是我爱你'
+          });
+          break;
+        }
+      case 5:
+        {
+          $Toast({
+            content: '一定要养成良好的作息习惯，不然会像我一样秃头'
+          });
+          break;
+        }
+      case 6:
+        {
+          $Toast({
+            content: '你是不是很无聊，所以才来点这个'
+          });
+          break;
+        }
+      case 7:
+        {
+          $Toast({
+            content: '这个隐藏的功能都被你发现啦！'
+          });
+          break;
+        }
+      case 7:
+        {
+          $Toast({
+            content: '心中有爱，才会人见人爱'
+          });
+          break;
+        }
+      case 8:
+        {
+          $Toast({
+            content: '真正喜欢的人和事，都值得我们坚持'
+          });
+          break;
+        }
+      case 9:
+        {
+          $Toast({
+            content: '从遇见你开始，凛冬散尽 ，星河长明'
+          });
+          break;
+        }
+      case 10:
+        {
+          $Toast({
+            content: '你不开心就欺负我好咯，反正我喜欢你'
+          });
+          break;
+        }
+      case 11:
+        {
+          $Toast({
+            content: '爱旅行就出发，大不了有多少钱走多远'
+          });
+          break;
+        }
+      case 12:
+        {
+          $Toast({
+            content: '该出手时就出手，该分类时就分类'
+          });
+          break;
+        }
+      case 13:
+        {
+          $Toast({
+            content: '遇见你很幸运，希望你也能这么觉得'
+          });
+          break;
+        }
+      case 14:
+        {
+          $Toast({
+            content: '看到你出现，感觉全身在过电'
+          });
+          break;
+        }
+      case 15:
+        {
+          $Toast({
+            content: '可乐要加冰，爱我要走心'
+          });
+          break;
+        }
+      case 16:
+        {
+          $Toast({
+            content: '星河滚烫，你是人间理想'
+          });
+          break;
+        }
+      case 17:
+        {
+          $Toast({
+            content: '愿有人懂你，可持心相对，能无语传情'
+          });
+          break;
+        }
+      case 18:
+        {
+          $Toast({
+            content: '你就委屈一下，来我心里吧'
+          });
+          break;
+        }
+      case 19:
+        {
+          $Toast({
+            content: '你一笑就跟着笑的人，不是傻就是爱你'
+          });
+          break;
+        }
+      case 20:
+        {
+          $Toast({
+            content: '你站的方向，风吹过来都是暖的'
+          });
+          break;
+        }
+      case 21:
+        {
+          $Toast({
+            content: '今夜太晚了，明天继续想你'
+          });
+          break;
+        }
+      case 22:
+        {
+          $Toast({
+            content: '我只希望，爱我的人能够以我为豪'
+          });
+          break;
+        }
+      case 23:
+        {
+          $Toast({
+            content: '你是我的今天，以及所有的明天'
+          });
+          break;
+        }
+      default:
+        {
+          break;
+        }
+    }
+
   },
   //跳转至版本信息页面
   showVersion() {
@@ -818,78 +991,361 @@ Page({
     })
     console.log("click")
   },
+  //点击hourly跳转至hourly
+  goHourly() {
+    var that = this;
+    var hourTem4 = [];
+    var hourTem8 = [];
+    for (var i = 0; i < that.data.hourly.length; i++) {
+      if (that.data.hourly.length == 4) {
+        hourTem4.push(that.data.hourly[i].tem)
+        this.setData({
+          hourTem4: hourTem4
+        })
+      }
+      if (that.data.hourly.length == 8) {
+        hourTem8.push(that.data.hourly[i].tem)
+        this.setData({
+          hourTem8: hourTem8
+        })
+      }
+    }
+    //处理weather数据
+    for (var i = 0; i < that.data.weather.length; i++) {
+      if (that.data.weather[i].wea.search("rain-storm") != -1) {
+        that.setData({
+          rainyB: that.data.rainyB + 1
+        })
+      } else if (that.data.weather[i].wea.search("rain-heavy") != -1) {
+        that.setData({
+          rainyB: that.data.rainyB + 1
+        })
+      } else if (that.data.weather[i].wea.search("rain-light") != -1) {
+        that.setData({
+          rainyA: that.data.rainyA + 1
+        })
+      } else if (that.data.weather[i].wea.search("rain") != -1) {
+        that.setData({
+          rainyA: that.data.rainyA + 1
+        })
+      } else if (that.data.weather[i].wea.search("cloudy") != -1) {
+        that.setData({
+          cloudy: that.data.cloudy + 1
+        })
+      } else if (that.data.weather[i].wea.search("sandstorm") != -1) {
+        that.setData({
+          sandstorm: that.data.sandstorm + 1
+        })
+      } else if (that.data.weather[i].wea.search("sunny") != -1) {
+        that.setData({
+          sunny: that.data.sunny + 1
+        })
+      }
+    }
+    that.setData({
+      radarData: [that.data.sunny, that.data.rainyA, that.data.rainyB, that.data.cloudy, that.data.sandstorm]
+    })
+
+    that.makeData();
+    // wx.navigateTo({
+    //   url: '/pages/hourly/hourly',
+    // })
+  },
+  goMusic() {
+    var that = this;
+    wx.navigateTo({
+      url: '../music/music',
+    })
+  },
+  goCity() {
+    var that = this;
+    wx.navigateTo({
+      url: '../search/search?city=' + that.data.city,
+    })
+  },
+  //处理hourTem数据
+  makeData() {
+    var that = this;
+    var flag = [];
+    if (that.data.hourTem8) {
+      for (var i = 0; i < that.data.hourTem8.length; i++) {
+        flag[i] = this.data.hourTem8[i].slice(0, 2)
+      }
+      this.setData({
+        hourTem8: flag
+      })
+    } else {
+      for (var i = 0; i < that.data.hourTem4.length; i++) {
+        flag[i] = this.data.hourTem4[i].slice(0, 2)
+      }
+      this.setData({
+        hourTem4: flag
+      })
+    }
+    console.log("打印hourTem4", this.data.hourTem4)
+    console.log("打印hourTem8", this.data.hourTem8)
+    console.log(that.data.radarData)
+    wx.navigateTo({
+      url: '/pages/hourly1/hourly1?hourTem4=' + encodeURIComponent(JSON.stringify(that.data.hourTem4)) + '&hourTem8=' + encodeURIComponent(JSON.stringify(that.data.hourTem8)) + '&barData=' + encodeURIComponent(JSON.stringify(that.data.radarData))
+    })
+  },
+
+  //点击左侧框跳转至canvas
+  goCanvas() {
+    var that = this;
+    wx.navigateTo({
+      url: '/pages/public/public',
+    })
+    // that.goHourly();
+    // var model = JSON.stringify(that.data.model);
+    // wx.navigateTo({
+    //   url: '/pages/canvas/canvas?model=' + model,
+    // })
+    // for (var i = 0; i < that.data.weather.length; i++) {
+    //   if (that.data.weather[i].wea.search("rain-storm") != -1) {
+    //     that.setData({
+    //       rainyB: that.data.rainyB + 1
+    //     })
+    //   } else if (that.data.weather[i].wea.search("rain-heavy") != -1) {
+    //     that.setData({
+    //       rainyB: that.data.rainyB + 1
+    //     })
+    //   } else if (that.data.weather[i].wea.search("rain-light") != -1) {
+    //     that.setData({
+    //       rainyA: that.data.rainyA + 1
+    //     })
+    //   } else if (that.data.weather[i].wea.search("rain") != -1) {
+    //     that.setData({
+    //       rainyA: that.data.rainyA + 1
+    //     })
+    //   } else if (that.data.weather[i].wea.search("cloudy") != -1) {
+    //     that.setData({
+    //       cloudy: that.data.cloudy + 1
+    //     })
+    //   } else if (that.data.weather[i].wea.search("sandstorm") != -1) {
+    //     that.setData({
+    //       sandstorm: that.data.sandstorm + 1
+    //     })
+    //   } else if (that.data.weather[i].wea.search("sunny") != -1) {
+    //     that.setData({
+    //       sunny: that.data.sunny + 1
+    //     })
+    //   }
+    // }
+    // that.setData({
+    //   radarData: [that.data.sunny, that.data.rainyA, that.data.rainyB, that.data.cloudy, that.data.sandstorm]
+    // })
+    // console.log(that.data.radarData)
+    // $Toast({
+    //   content: '还在施工中！'
+    // });
+  },
   /**生活指数 */
   shushi() {
     let that = this;
     $Toast({
       content: that.data.lifestyle[0].txt,
       icon: 'prompt',
-      duration: 0,
+      duration: 5,
       mask: false
     });
-    setTimeout(() => {
-      $Toast.hide();
-    }, 5000);
   },
   chuanyi() {
     let that = this;
     $Toast({
       content: that.data.lifestyle[1].txt,
       icon: 'prompt',
-      duration: 0,
+      duration: 5,
       mask: false
     });
-    setTimeout(() => {
-      $Toast.hide();
-    }, 5000);
   },
   ganmao() {
     let that = this;
     $Toast({
       content: that.data.lifestyle[2].txt,
       icon: 'prompt',
-      duration: 0,
+      duration: 5,
       mask: false
     });
-    setTimeout(() => {
-      $Toast.hide();
-    }, 5000);
   },
   yundong() {
     let that = this;
     $Toast({
       content: that.data.lifestyle[3].txt,
       icon: 'prompt',
-      duration: 0,
+      duration: 5,
       mask: false
     });
-    setTimeout(() => {
-      $Toast.hide();
-    }, 5000);
+
   },
   lvyou() {
     let that = this;
     $Toast({
       content: that.data.lifestyle[4].txt,
       icon: 'prompt',
-      duration: 0,
+      duration: 5,
       mask: false
     });
-    setTimeout(() => {
-      $Toast.hide();
-    }, 5000);
   },
   ziwaixian() {
     let that = this;
     $Toast({
       content: that.data.lifestyle[5].txt,
       icon: 'prompt',
-      duration: 0,
+      duration: 5,
       mask: false
     });
-    setTimeout(() => {
-      $Toast.hide();
-    }, 5000);
   },
-
+  onShareAppMessage: function(res) {
+    var that = this;
+    var text = '这么好看的天气小程序，不来看一下嘛'
+    return {
+      title: text,
+      path: '/pages/index/index'
+    }
+  },
+  showVersionStart() {
+    var that = this;
+    that.setData({
+      tap1: true
+    })
+  },
+  showVersionEnd() {
+    var that = this;
+    that.setData({
+      tap1: false
+    })
+  },
+  goCanvasStart() {
+    var that = this;
+    that.setData({
+      tap2: true
+    })
+  },
+  goCanvasEnd() {
+    var that = this;
+    that.setData({
+      tap2: false
+    })
+  },
+  gridStart1() {
+    var that = this;
+    that.setData({
+      grid1: true
+    })
+  },
+  gridEnd1() {
+    var that = this;
+    that.setData({
+      grid1: false
+    })
+  },
+  gridStart2() {
+    var that = this;
+    that.setData({
+      grid2: true
+    })
+  },
+  gridEnd2() {
+    var that = this;
+    that.setData({
+      grid2: false
+    })
+  },
+  gridStart3() {
+    var that = this;
+    that.setData({
+      grid3: true
+    })
+  },
+  gridEnd3() {
+    var that = this;
+    that.setData({
+      grid3: false
+    })
+  },
+  gridStart4() {
+    var that = this;
+    that.setData({
+      grid4: true
+    })
+  },
+  gridEnd4() {
+    var that = this;
+    that.setData({
+      grid4: false
+    })
+  },
+  gridStart5() {
+    var that = this;
+    that.setData({
+      grid5: true
+    })
+  },
+  gridEnd5() {
+    var that = this;
+    that.setData({
+      grid5: false
+    })
+  },
+  gridStart6() {
+    var that = this;
+    that.setData({
+      grid6: true
+    })
+  },
+  gridEnd6() {
+    var that = this;
+    that.setData({
+      grid6: false
+    })
+  },
+  goHourlyStart() {
+    var that = this;
+    that.setData({
+      tap3: true
+    })
+  },
+  goHourlyEnd() {
+    var that = this;
+    that.setData({
+      tap3: false
+    })
+  },
+  goMineStart() {
+    var that = this;
+    that.setData({
+      tap4: true
+    })
+  },
+  goMineEnd() {
+    var that = this;
+    that.setData({
+      tap4: false
+    })
+  },
+  goMusicStart() {
+    var that = this;
+    that.setData({
+      tap5: true
+    })
+  },
+  goMusicEnd() {
+    var that = this;
+    that.setData({
+      tap5: false
+    })
+  },
+  goCityStart() {
+    var that = this;
+    that.setData({
+      tap6: true
+    })
+  },
+  goCityEnd() {
+    var that = this;
+    that.setData({
+      tap6: false
+    })
+  },
 })

@@ -5,7 +5,6 @@ page {
   overflow-x: hidden;
   font-family: 'PingFang SC';
 }
-
 .cover {
   position: fixed;
   height: 100vh;
@@ -25,7 +24,7 @@ page {
   z-index: 1;
   /* background-color: rgba(0, 0, 0, 0.05); */
   background: linear-gradient(to bottom, #000, #fff);
-  opacity: 0.6;
+  opacity: 0.3;
 }
 
 .container {
@@ -163,12 +162,11 @@ page {
   z-index: 20;
 }
 
-.weather .tmt {
+.weather .tmtday {
   position: absolute;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* border: 2rpx solid #acadb3; */
   z-index: 10;
   border-radius: 50rpx;
   height: 200rpx;
@@ -178,10 +176,7 @@ page {
   font-size: 120rpx;
   font-weight: 400;
   color: #fff;
-  text-shadow: 2rpx 2rpx 3rpx rgba(245, 242, 238, 0.2);
-  box-shadow: 10rpx 10rpx 12rpx rgba(37, 33, 27, 0.6);
 }
-
 .weather .hover_tmt {
   transform: scale(0.95);
 }
@@ -386,7 +381,20 @@ page {
   box-shadow: 10rpx 10rpx 12rpx rgba(37, 33, 27, 0.4);
   border-radius: 50rpx;
 }
-
+.S_last_view_night {
+  display: flex;
+  align-items: center;
+  position: fixed;
+  height: 60rpx;
+  width: 120rpx;
+  left: -30rpx;
+  top: 184rpx;
+  z-index: 999;
+  background: rgba(241, 241, 241, 0.3);
+  /* background: transparent; */
+  box-shadow: 2rpx 2rpx 5rpx rgba(250, 250, 250, 0.6);
+  border-radius: 50rpx;
+}
 .S_last_btn {
   margin-left: 56rpx;
   font-family: 'PingFang SC';

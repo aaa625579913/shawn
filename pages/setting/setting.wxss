@@ -1,1 +1,8 @@
 /* pages/setting/setting.wxss */
+.container{
+  width: 750rpx;
+}
+
+.setting{
+  width: 100%;
+}

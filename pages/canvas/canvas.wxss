@@ -1,0 +1,37 @@
+/* pages/canvas/canvas.wxss */
+
+.canvas1 {
+  position: absolute;
+  top:300rpx;
+  width: 100%;
+  height: 800rpx;
+}
+
+ec-canvas { 
+  width: 800rpx;
+  height: 800rpx;
+}
+
+/* 赶工 */
+
+.working {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  bottom: 500rpx;
+  height: 400rpx;
+  width: 100%;
+}
+
+.working .img {
+  height: 128rpx;
+  width: 197rpx;
+  padding: 20rpx;
+}
+
+.working .text {
+  font-family: 'PingFang';
+  font-size: 50rpx;
+  color: #222;
+}

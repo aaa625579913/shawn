@@ -1,0 +1,19 @@
+/* pages/hourly1/hourly1.wxss */
+
+.canvas1 {
+  position: absolute;
+  top: 200rpx;
+  width: 780rpx;
+  height: 650rpx;
+}
+
+/* 
+ec-canvas {
+  width: 800rpx;
+  height: 600rpx;
+} */
+
+.test {
+  width: 780rpx;
+  height: 650rpx;
+}

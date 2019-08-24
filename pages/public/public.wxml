@@ -1,0 +1,81 @@
+<!--miniprogram/pages/home.wxml-->
+<view class="index w100">
+  <view class="header-block pr">
+    <image class="banner" src='../../static/images/night2.jpg' mode="aspectFill"></image>
+
+    <view class="mine-btn-block {{isHeader ? 'active' : ''}}" style="height:{{statusBarHeight+44}}px;">
+      <!-- <image class="banner" src='../../static/images/he.jpg' mode="aspectFill"></image> -->
+      <!-- <view class="mine-btn1" hover-class='mine-btn-after' bindtap='gotomine'>我的空间</view>
+      <view class="mine-btn2" hover-class='mine-btn-after' bindtap='gotomine'>暂未开通</view> -->
+      <view style="position:absolute;height:70rpx;width:70rpx;left:16rpx;top:{{statusBarHeight+4}}px;display:flex;align-items:center;justify-content:center;" bindtap="goback">
+        <image src='{{isHeader?"/static/images/back_b.png":"/static/images/back_w.png"}}' style='width:21rpx;height:36rpx;left:28rpx;'></image>
+      </view>
+      <view wx:if="{{isHeader}}" style='position:absolute;top:{{statusBarHeight+8}}px;color:white;font-size:36rpx;font-weight:bold;z-index:999;color:#000000'>
+        朋友圈
+      </view>
+      <input class="search-input" placeholder-class="search-input-place" bindinput="bindKeyInput" placeholder="输入关键词" wx:if="{{false}}" />
+    </view>
+    <view class="user">
+      <view class='title' bindtap="goLogin">
+        {{userInfo.nickName || '未登录'}}
+      </view>
+      <image class="avatar" src='{{userInfo.avatarUrl || "../../static/images/hema.png"}}' bindtap="goLogin" />
+
+    </view>
+  </view>
+
+  <!-- 列表 -->
+  <view class="list-block w100" wx:if="{{!isRefreshStatus}}">
+    <view class='item-block border-bottom bgff' wx:for="{{listData}}" wx:key="{{index}}">
+      <image class='userImg mr10' src='{{item.avatarUrl}}'></image>
+      <view class="item-right">
+        <view class="username">{{item.nickName}}</view>
+        <view class='item-text'>
+          <displayPartText lineNumber="2" textLineHeight="44" showBtnText="全文" hideBtnText="收起">{{item.content}}</displayPartText>
+        </view>
+        <!-- 点开图片 -->
+        <view class='img-block'>
+          <image wx:if="{{item.image.length === 1 ? true : false}}" class='img1' lazy-load="{{true}}" mode="aspectFill" wx:for="{{item.image}}" wx:for-item='_item' wx:for-index="_index" wx:key="{{_index}}" data-index="{{index}}" data-imgIndex="{{_index}}" data-curr-url="{{_item}}"
+            src='{{_item || ""}}' catchtap="previewImage"></image>
+          <image wx:if="{{item.image.length !== 1 ? true : false}}" class='img' lazy-load="{{true}}" mode="aspectFill" wx:for="{{item.image}}" wx:for-item='_item' wx:for-index="_index" wx:key="{{_index}}" data-index="{{index}}" data-imgIndex="{{_index}}" data-curr-url="{{_item}}"
+            src='{{_item || ""}}' catchtap="previewImage"></image>
+        </view>
+        <!-- 动态发布的时间 -->
+        <view class="item-footer">
+          <view class="item-time plr30" wx:if="{{item.newTime === '刚刚' ? true : false}}">{{item.newTime}}</view>
+          <view class="item-time plr30" wx:else>{{item.newTime}}前</view>
+          <block wx:if="{{isRelease}}">
+            <image class="iconfont" src="../../static/images/more.png" data-imgid="{{item.image}}" data-id="{{item._id}}" data-openid="{{item._openid}}" catchtap="actionBtn" wx:if="{{openid === item._openid || auth === 1}}"></image>
+          </block>
+
+        </view>
+      </view>
+    </view>
+    <!-- 加载更多 -->
+    <view wx:if="{{listData.length ? true : false}}">
+      <view class="loading" hidden="{{!searchLoading}}">疯狂加载中...</view>
+      <view class="loading complete" hidden="{{!searchLoadingComplete}}">--没有更多数据--</view>
+    </view>
+    <view class='empty-list' wx:if="{{listData.length ? false : true}}">
+      当前一条数据都没有哦!
+    </view>
+
+  </view>
+  <!-- loading -->
+  <view class="loading-block" wx:else>
+    <text></text>
+    <text></text>
+    <text></text>
+    <text></text>
+    <text></text>
+  </view>
+
+  <view class="release-btn" hover-class='button-hover' bindtap='gotorelease' wx:if="{{isRelease}}">
+    <image class="iconfont icon-fabuxinxi" src="../../static/images/write.png"></image>
+  </view>
+
+  <!-- 刷新并返回顶部 -->
+  <view class="back-top" hover-class='button-hover' catchtap="backTop">
+    <image class="iconfont icon-icon_refresh" src="../../static/images/refresh.png"></image>
+  </view>
+</view>

@@ -1,41 +1,32 @@
 <!-- index.wxml -->
 <!-- 背景 -->
-<view wx:if="{{bgImg}}" class="index-cover"></view>
+<view wx:if="{{switch1}}" class="index-cover"></view>
 <image wx:if="{{bgImg}}" class="background" src="{{bgImg}}"></image>
 <view style="height:{{statusBarHeight+44}}px;width:100%;display:flex;z-index:999;">
-  <view style="padding-top:{{statusBarHeight+8}}px;" class="welcome" hover-class="none" hover-stop-propagation="false" bindtap="goMine">
-    <view class="avatar">
-      <open-data type="userAvatarUrl"></open-data>
-    </view>
+  <view style="padding-top:{{statusBarHeight+8}}px;opacity:{{tap4?'0.8':'1'}}" class="welcome" hover-class="none" hover-stop-propagation="false" bindtap="goMine" bindtouchstart="goMineStart" bindtouchend="goMineEnd">
+    <image class='avatar' src='{{userInfo.avatarUrl || "../../static/images/hema.png"}}' />
     <view class='title'>
       <view class="nick" hover-class="none" hover-stop-propagation="false">
-        <open-data type="userNickName"></open-data>
+        {{userInfo.nickName || '未登录'}}
       </view>
-      <view class="" hover-class="none" hover-stop-propagation="false">,欢迎你！</view>
+      <view class="" hover-class="none" hover-stop-propagation="false" wx:if="{{userInfo.nickName}}">
+        ,欢迎你！
+      </view>
     </view>
   </view>
 </view>
 <view class="container" wx:if="{{isReady}}">
   <!-- 版本号 -->
-  <view class="version" bindtap="showVersion" style="margin-top:{{statusBarHeight+44}}px;">
-    1.0.0
+  <view class="version" bindtap="showVersion" bindtouchstart="showVersionStart" bindtouchend="showVersionEnd" style="margin-top:{{statusBarHeight+44}}px;opacity:{{tap1?'0.8':'1'}}">
+    1.3.1
   </view>
-  <!-- 初始用户头像和名称 -->
-  <!-- <view class="userinfo">
-    <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
-    <block wx:else>
-      <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
-      <text class="userinfo-nickname">{{userInfo.nickName}}</text>
-    </block>
-  </view> -->
   <!-- 主屏幕显示区域 -->
   <view class="weather">
-
     <view class="city">{{city}}</view>
-    <view class="nowinfo">{{weatherNow[0].wea}}</view>
-    <view class="tmt" hover-class="hover_tmt" bindtap="asked">{{now_temperature}}°</view>
+    <view class="nowinfo">{{cond_txt}}</view>
+    <view class="tmtday" hover-class="hover_tmt" bindtap="asked">{{now_temperature}}°</view>
     <!-- 最上方的天气 -->
-    <image wx:if="{{isWeather}}" src="{{isWeather}}" class="sunny"></image>
+    <image wx:if="{{isWeather.length>10}}" src="{{isWeather}}" class="sunny"></image>
     <view class="today">
       <view class="week">{{weatherNow[0].week}}</view>
       <view class="today1">今天</view>
@@ -45,8 +36,8 @@
       </view>
     </view>
   </view>
-  <!-- 轮播组件 -->
-  <swiper class="swiper" next-margin='0px' previous-margin="0px" display-multiple-items="4" easing-function="linear">
+  <!-- hourly -->
+  <swiper class="swiper" next-margin='0px' previous-margin="0px" display-multiple-items="4" easing-function="linear" bindtap="goHourly" bindtouchstart="goHourlyStart" bindtouchend="goHourlyEnd" style="opacity:{{tap3?'0.8':'1'}}">
     <block wx:for="{{hourly}}" wx:key="index1">
       <swiper-item class="slide">
         <view class="nowtime">{{item.day}}</view>
@@ -77,63 +68,72 @@
       </view>
     </view>
   </view>
+  <!-- 生活指数蒙层 -->
+  <view wx:if="{{isToast}}" style="position:absolute;margin-top:1780rpx;height:350rpx;width:100%;z-index:200;"></view>
   <!-- 生活指数等 -->
   <view style="position:absolute;margin-top:1780rpx;width:100%;z-index:20;">
     <i-grid class="grid">
-      <i-grid-item bindtap="shushi">
+      <i-grid-item bindtap="shushi" bindtouchstart="gridStart1" bindtouchend="gridEnd1" style="opacity:{{grid1?'0.8':'1'}}">
         <i-grid-icon>
-          <image src="../../static/images/shushi.png" />
+          <image src="{{isBlack?'../../static/images/shushiN.png':'../../static/images/shushi.png'}}" />
         </i-grid-icon>
-        <i-grid-label>舒适度</i-grid-label>
+        <i-grid-label-N wx:if="{{isBlack}}">舒适度</i-grid-label-N>
+        <i-grid-label wx:else>舒适度</i-grid-label>
       </i-grid-item>
-      <i-grid-item bindtap="chuanyi">
+      <i-grid-item bindtap="chuanyi" bindtouchstart="gridStart2" bindtouchend="gridEnd2" style="opacity:{{grid2?'0.8':'1'}}">
         <i-grid-icon>
-          <image src="../../static/images/chuanyi.png" />
+          <image src="{{isBlack?'../../static/images/chuanyiN.png':'../../static/images/chuanyi.png'}}" />
         </i-grid-icon>
-        <i-grid-label>穿衣</i-grid-label>
+        <i-grid-label-N wx:if="{{isBlack}}">穿衣</i-grid-label-N>
+        <i-grid-label wx:else>穿衣</i-grid-label>
       </i-grid-item>
-      <i-grid-item bindtap="ganmao">
+      <i-grid-item bindtap="ganmao" bindtouchstart="gridStart3" bindtouchend="gridEnd3" style="opacity:{{grid3?'0.8':'1'}}">
         <i-grid-icon>
-          <image src="../../static/images/ganmao.png" />
+          <image src="{{isBlack?'../../static/images/ganmaoN.png':'../../static/images/ganmao.png'}}" />
         </i-grid-icon>
-        <i-grid-label>感冒</i-grid-label>
+        <i-grid-label-N wx:if="{{isBlack}}">感冒</i-grid-label-N>
+        <i-grid-label wx:else>感冒</i-grid-label>
       </i-grid-item>
     </i-grid>
     <i-grid class="grid">
-      <i-grid-item bindtap="yundong">
+      <i-grid-item bindtap="yundong" bindtouchstart="gridStart4" bindtouchend="gridEnd4" style="opacity:{{grid4?'0.8':'1'}}">
         <i-grid-icon>
-          <image src="../../static/images/yundong.png" />
+          <image src="{{isBlack?'../../static/images/yundongN.png':'../../static/images/yundong.png'}}" />
         </i-grid-icon>
-        <i-grid-label>运动</i-grid-label>
+        <i-grid-label-N wx:if="{{isBlack}}">运动</i-grid-label-N>
+        <i-grid-label wx:else>运动</i-grid-label>
       </i-grid-item>
-      <i-grid-item bindtap="lvyou">
+      <i-grid-item bindtap="lvyou" bindtouchstart="gridStart5" bindtouchend="gridEnd5" style="opacity:{{grid5?'0.8':'1'}}">
         <i-grid-icon>
-          <image src="../../static/images/lvyou.png" />
+          <image src="{{isBlack?'../../static/images/lvyouN.png':'../../static/images/lvyou.png'}}" />
         </i-grid-icon>
-        <i-grid-label>旅游</i-grid-label>
+        <i-grid-label-N wx:if="{{isBlack}}">旅游</i-grid-label-N>
+        <i-grid-label wx:else>旅游</i-grid-label>
       </i-grid-item>
-      <i-grid-item bindtap="ziwaixian">
+      <i-grid-item bindtap="ziwaixian" bindtouchstart="gridStart6" bindtouchend="gridEnd6" style="opacity:{{grid6?'0.8':'1'}}">
         <i-grid-icon>
-          <image src="../../static/images/ziwaixian.png" />
+          <image src="{{isBlack?'../../static/images/ziwaixianN.png':'../../static/images/ziwaixian.png'}}" />
         </i-grid-icon>
-        <i-grid-label>紫外线</i-grid-label>
+        <i-grid-label-N wx:if="{{isBlack}}">紫外线</i-grid-label-N>
+        <i-grid-label wx:else>紫外线</i-grid-label>
       </i-grid-item>
     </i-grid>
   </view>
 </view>
-
-<!-- 左侧弹框-闭合 -->
-<view class="S_last_view" style="margin-top:{{statusBarHeight+12}}px" wx:if="{{isReady}}" bindtap="goBottom">
-  <image src="/static/images/star.png" style="position:absolute;height:40rpx;width:40rpx;left:48rpx;" />
+<!-- circle模块-闭合 -->
+<view class="{{isBlack?'S_last_view_night':'S_last_view'}}" style="margin-top:{{statusBarHeight+12}}px;opacity:{{tap2?'0.8':'1'}}" wx:if="{{isReady&&isRelease}}" bindtap="goCanvas" bindtouchstart="goCanvasStart" bindtouchend="goCanvasEnd">
+  <image src="/static/images/circle.png" style="position:absolute;height:40rpx;width:40rpx;left:48rpx;" />
 </view>
-
-<!-- 蒙层 -->
-<!-- <view class="cover" wx:if="{{isShow1||isShow2}}"></view> -->
-<!-- 授权组件 -->
-<!-- <login id='login' title='登录提示' content='小程序需要您的授权才能提供更好的服务哦' confirmText='点击登陆' bind:confirmEvent='confirmEvent' bind:bindGetUserInfo='bindGetUserInfo'>
-</login> -->
+<!-- music模块-闭合 -->
+<view class="{{isBlack?'S_last_view_night':'S_last_view'}}" style="margin-top:{{statusBarHeight+52}}px;opacity:{{tap5?'0.8':'1'}}" wx:if="{{isReady&&isRelease}}" bindtap="goMusic" bindtouchstart="goMusicStart" bindtouchend="goMusicEnd">
+  <image src="/static/images/music.png" style="position:absolute;height:40rpx;width:40rpx;left:48rpx;" />
+</view>
+<!-- 地区选择模块-闭合 -->
+<view class="{{isBlack?'S_last_view_night':'S_last_view'}}" style="margin-top:{{statusBarHeight+92}}px;opacity:{{tap5?'0.8':'1'}}" wx:if="{{isReady&&isRelease}}" bindtap="goCity" bindtouchstart="goCityStart" bindtouchend="goCityEnd" >
+  <image src="/static/images/city.png" style="position:absolute;height:40rpx;width:40rpx;left:48rpx;" />
+</view>
 <!-- 点我 -->
- <image src="../../static/images/clickme.png" wx:if="{{!isNew&&isReady}}" style="position:absolute;height:74rpx;width:124rpx;top:{{statusBarHeight+44}}px;left:35rpx;z-index:20; opacity: 0.8;" />
+<image src="../../static/images/clickme.png" wx:if="{{(!isNew&&isReady)||!userInfo.nickName}}" style="position:absolute;height:74rpx;width:124rpx;top:{{statusBarHeight+44}}px;left:35rpx;z-index:20; opacity: 0.8;" />
 <!-- 轻提示组件 -->
 <i-toast id="toast" />
 <!-- loading组件 -->
