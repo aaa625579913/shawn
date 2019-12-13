@@ -19,9 +19,19 @@ App({
       })
     }
     var that = this;
-    if (!wx.getStorageSync('switch1')) {
+    if (wx.getStorageSync('switch1') != null) {
+
+    } else {
       wx.setStorage({
         key: 'switch1',
+        data: true,
+      })
+    }
+    if (wx.getStorageSync('switch2') != null) {
+
+    } else {
+      wx.setStorage({
+        key: 'switch2',
         data: true,
       })
     }
@@ -95,6 +105,5 @@ App({
     screenHeight: 0, // 获取屏幕的宽度
     screenWidth: 0, // 获取屏幕的高度
     statusBarHeight: 0, //导航栏高度
-    coverSet: true
   }
 })

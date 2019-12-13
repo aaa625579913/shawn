@@ -10,7 +10,8 @@
   height: 100%;
   box-sizing: border-box;
 }
-.list-scroll.top{
+
+.list-scroll.top {
   padding-top: 90rpx;
 }
 
@@ -32,7 +33,7 @@
   font-size: 28rpx;
   padding: 15rpx;
   padding-left: 30rpx;
-  color: #999;
+  color: #37383f;
 }
 
 .list-name.border::after {
@@ -48,12 +49,12 @@
 .list-right-wrapper {
   position: absolute;
   top: 240rpx;
-  right: 20rpx;
+  right: 15rpx;
   padding: 20rpx 0rpx;
   padding-right: 9rpx;
   border-radius: 40rpx;
   /* z-index: 2; */
-  background: #ddd;
+  background: rgba(55, 56, 63, 0.9);
   box-sizing: border-box;
   z-index: 999;
 }
@@ -64,11 +65,13 @@
   align-items: center;
   padding: 2rpx 10rpx;
   font-size: 26rpx;
-  color: #666;
+  color: #fff;
 }
+
 .right-item.active {
-  color: red
+  color: red;
 }
+
 .list-search {
   position: absolute;
   top: 0;
@@ -80,8 +83,8 @@
   padding: 10rpx 30rpx;
   box-sizing: border-box;
   z-index: 20;
-  background: #FFF;
-  border-bottom:1px #f5f5f5 solid; 
+  background: #fff;
+  border-bottom: 1px #f5f5f5 solid;
 }
 
 .search-title {
@@ -128,22 +131,22 @@
 .list-horizontal .list-name {
   padding: 5rpx 15rpx;
   padding-right: 25rpx;
-  border: 1px #ccc solid;
+  border: 1px #37383f solid;
   border-radius: 10rpx;
   margin: 10rpx;
   /* margin-right: 20rpx; */
 }
-.fiexed-box {
-    position: absolute;
-    top: 90rpx;
-    z-index: 19;
-    width: 100%;
-    /* background: #ddd; */
-   
 
+.fiexed-box {
+  position: absolute;
+  top: 90rpx;
+  z-index: 19;
+  width: 100%;
+  /* background: #ddd; */
 }
 
 /* 无数据  */
+
 .nodata {
   padding-top: 200rpx;
   text-align: center;

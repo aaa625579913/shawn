@@ -32,5 +32,9 @@ Page({
   bindtap(e) {
     console.log(e.detail)
   },
-
+  goback(){
+    wx.navigateBack({
+      
+    })
+  }
 })

@@ -29,7 +29,7 @@ Page({
     openid: '',
     appid: '',
     spinShow: false, //加载组件
-
+    peopleLike:['Sure']   //点赞的人
   },
   onLoad: function(options) {
     let that = this;
@@ -223,9 +223,9 @@ Page({
     let _isLogin = wx.getStorageSync('isLogin');
     let _openid = e.currentTarget.dataset.openid;
     if (this.data.auth === 1 && _openid !== this.data.openid) {
-      _itemList = ['删除', '拉黑该用户'];
+      _itemList = ['删除', '拉黑该用户','点赞'];
     } else {
-      _itemList = ['删除'];
+      _itemList = ['删除', '点赞'];
     }
     wx.showActionSheet({
       itemList: _itemList,
@@ -263,6 +263,8 @@ Page({
               }
             }
           })
+        } else if (res.tapIndex === 2){
+          console.log("点赞")
         }
       }
     })

@@ -62,7 +62,16 @@ Page({
     isBlack: false,
     timer: '', //定时器名字
     countDownNum: '0', //计时器初始值
-
+    swiperList: {
+      "display-multiple-items": 1,
+      "vertical": true,
+      "autoplay": true,
+      "circular": true,
+      "easing-function": "easeInOutCubic",
+      "duration": 500,
+      "interval": 4000
+    },
+    handleTips: true
   },
   //事件处理函数
   bindViewTap: function() {
@@ -89,10 +98,14 @@ Page({
           $Toast({
             content: '请检查一下是否开启了微信地理位置授权'
           });
-        } else if (that.data.countDownNum > 10) {
+        } else if (that.data.countDownNum == 15 && that.data.spinShow) {
+          clearInterval(that.data.timer);
+          $Toast({
+            content: '请联系客服反馈一下问题，非常抱歉！'
+          });
+        } else if (that.data.countDownNum > 15) {
           clearInterval(that.data.timer);
         }
-        console.log("conutDownNum", countDownNum)
       }, 1000)
     })
   },
@@ -102,7 +115,7 @@ Page({
   onLoad: function(options) {
     var that = this;
     var detailCity = options.detailCity ? options.detailCity : null;
-    if (detailCity){
+    if (options && options.detailCity) {
       that.setData({
         detailCity: detailCity
       })
@@ -110,6 +123,7 @@ Page({
     that.setData({
       spinShow: true,
     })
+    console.log("onload", detailCity)
     that.countDown();
     // that.getLocationInfo();
     // that.getLocationInfo();
@@ -180,49 +194,57 @@ Page({
       if (that.data.weatherNow[0].wea.search("雨") != -1) {
         that.setData({
           bgImg: 'https://shawn-weather-1258489802.cos.ap-shenzhen-fsi.myqcloud.com/newWeather/night2.jpg',
-          isBlack: true
+          isBlack: true,
+          isRain: true
         })
       } else {
         if ((that.data.time >= 0 && that.data.time < 6)) {
           that.setData({
             bgImg: 'https://shawn-weather-1258489802.cos.ap-shenzhen-fsi.myqcloud.com/newWeather/night.jpg',
-            isBlack: true
-
+            isBlack: true,
+            isSleep: true
           })
         } else if ((that.data.time >= 6 && that.data.time < 9)) {
           that.setData({
             bgImg: 'https://shawn-weather-1258489802.cos.ap-shenzhen-fsi.myqcloud.com/newWeather/sunny2.jpg',
-            isBlack: false
+            isBlack: false,
+            isSleep: true
           })
         } else if ((that.data.time >= 9 && that.data.time < 12)) {
           that.setData({
             bgImg: 'https://shawn-weather-1258489802.cos.ap-shenzhen-fsi.myqcloud.com/newWeather/sunny2.jpg',
-            isBlack: false
+            isBlack: false,
+            isSun: true
           })
         } else if ((that.data.time >= 12 && that.data.time < 14)) {
           that.setData({
             bgImg: 'https://shawn-weather-1258489802.cos.ap-shenzhen-fsi.myqcloud.com/newWeather/sunny2.jpg',
-            isBlack: false
+            isBlack: false,
+            isSun: true
           })
         } else if ((that.data.time >= 14 && that.data.time < 16)) {
           that.setData({
             bgImg: 'https://shawn-weather-1258489802.cos.ap-shenzhen-fsi.myqcloud.com/newWeather/sunny2.jpg',
-            isBlack: false
+            isBlack: false,
+            isSun: true
           })
         } else if ((that.data.time >= 16 && that.data.time < 18)) {
           that.setData({
             bgImg: 'https://shawn-weather-1258489802.cos.ap-shenzhen-fsi.myqcloud.com/newWeather/sunny2.jpg',
-            isBlack: false
+            isBlack: false,
+            isSun: true
           })
         } else if ((that.data.time >= 18 && that.data.time < 21)) {
           that.setData({
             bgImg: 'https://shawn-weather-1258489802.cos.ap-shenzhen-fsi.myqcloud.com/newWeather/night.jpg',
-            isBlack: true
+            isBlack: true,
+            isMoon: true
           })
         } else if ((that.data.time >= 21 && that.data.time <= 24)) {
           that.setData({
             bgImg: 'https://shawn-weather-1258489802.cos.ap-shenzhen-fsi.myqcloud.com/newWeather/night.jpg',
-            isBlack: true
+            isBlack: true,
+            isSleep: true
           })
         }
       }
@@ -354,9 +376,16 @@ Page({
         var localCity = data[0].regeocodeData.addressComponent.city;
         localCity = localCity.substring(0, localCity.length - 1);
         console.error(localCity)
-        that.setData({
-          city: localCity
-        })
+        if (that.data.detailCity && that.data.detailCity != null) {
+          that.setData({
+            city: that.data.detailCity
+          })
+        } else {
+          that.setData({
+            city: localCity
+          })
+        }
+        console.log("getCityInfo", that.data.city)
         that.getWeatherInfo();
       },
       fail: function(info) {}
@@ -366,12 +395,6 @@ Page({
   //获取天气信息
   getWeatherInfo() {
     var that = this;
-    //天气请求-深圳
-    if(that.data.detailCity!=null){
-      that.setData({
-        city: that.data.detailCity
-      })
-    }
     wx.request({
       url: 'https://free-api.heweather.net/s6/weather?location=' + that.data.city + '&key=42ca8385e1ac4360939a3ff8f584e619',
       success(res) {
@@ -439,31 +462,108 @@ Page({
     })
 
     //新天气API-7日天气
-    wx.request({
-      url: "https://www.tianqiapi.com/api/?version=v1" + "&city" + that.data.city,
-      success(res) {
-        console.log("新天气api", res.data.data)
-        var weatherChange = res.data.data;
-        var weatherNow = weatherChange.slice(0, 1)
-        weatherChange = weatherChange.slice(1, weatherChange.length)
-        that.setData({
-            weather: weatherChange,
-            weatherNow: weatherNow,
-            model: res.data.data,
-            hourly: res.data.data[0].hours
-          },
-          setTimeout(function() {
-            that.judgeWeather()
-          }, 50))
-        console.log("weatherNow", that.data.weatherNow)
-        console.log("hourly", that.data.hourly)
-        console.log("weather", that.data.weather)
-        console.log("model", that.data.model)
-      },
-      fail(res) {
-        console.log("fail", res)
-      }
-    })
+    if (that.data.detailCity && that.data.detailCity != null) {
+      console.log("!!!!", that.data.detailCity)
+      wx.request({
+        url: "https://www.tianqiapi.com/api/?version=v1" + "&city=" + that.data.detailCity + "&appid=" + "43917347" + "&appsecret=" + "67MQSDzj",
+        success(res) {
+          console.log("新天气api", res)
+          var weatherChange = res.data.data;
+          console.log("!!!!", that.data.detailCity)
+          var weatherNow = weatherChange.slice(0, 1)
+          weatherChange = weatherChange.slice(1, weatherChange.length)
+          that.setData({
+              weather: weatherChange,
+              weatherNow: weatherNow,
+              model: res.data.data,
+              hourly: res.data.data[0].hours
+            },
+            setTimeout(function() {
+              that.judgeWeather()
+            }, 50))
+          console.log("weatherNow", that.data.weatherNow)
+          console.log("hourly", that.data.hourly)
+          console.log("weather", that.data.weather)
+          console.log("model", that.data.model)
+        },
+        fail(res) {
+          console.log("fail", res)
+        }
+      })
+      //一日天气
+      wx.request({
+        url: "https://www.tianqiapi.com/api/?version=v6" + "&city=" + that.data.detailCity + "&appid=" + "43917347" + "&appsecret=" + "67MQSDzj",
+        success(res) {
+          console.log("新天气api-一日天气", res)
+          that.setData({
+            air: res.data.air,
+            air_level: res.data.air_level,
+            air_pm25: res.data.air_pm25
+          }, function() {
+            that.setData({
+              airReady: true
+            })
+          })
+          console.log("air", that.data.air)
+          console.log("air_level", that.data.air_level)
+          console.log("air_pm25", that.data.air_pm25)
+        },
+        fail(res) {
+          console.log("fail", res)
+        }
+      })
+    } else {
+      wx.request({
+        url: "https://www.tianqiapi.com/api/?version=v1" + "&city=" + that.data.city + "&appid=" + "43917347" + "&appsecret=" + "67MQSDzj",
+        success(res) {
+          console.log("新天气api", res)
+          console.log("!!!!@@@", that.data.city)
+          var weatherChange = res.data.data;
+          var weatherNow = weatherChange.slice(0, 1)
+          weatherChange = weatherChange.slice(1, weatherChange.length)
+          that.setData({
+              weather: weatherChange,
+              weatherNow: weatherNow,
+              model: res.data.data,
+              hourly: res.data.data[0].hours
+            },
+            setTimeout(function() {
+              that.judgeWeather()
+            }, 50))
+          console.log("weatherNow", that.data.weatherNow)
+          console.log("hourly", that.data.hourly)
+          console.log("weather", that.data.weather)
+          console.log("model", that.data.model)
+        },
+        fail(res) {
+          console.log("fail", res)
+        }
+      })
+      //一日天气
+      wx.request({
+        url: "https://www.tianqiapi.com/api/?version=v6" + "&city=" + that.data.city + "&appid=" + "43917347" + "&appsecret=" + "67MQSDzj",
+        success(res) {
+          console.log("新天气api-一日天气", res)
+          that.setData({
+            air: res.data.air,
+            air_level: res.data.air_level,
+            air_pm25: res.data.air_pm25
+          }, function() {
+            that.setData({
+              airReady: true
+            })
+          })
+          console.log("air", that.data.air)
+          console.log("air_level", that.data.air_level)
+          console.log("air_pm25", that.data.air_pm25)
+        },
+        fail(res) {
+          console.log("fail", res)
+        }
+      })
+    }
+
+    console.log("getWeatherInfo", that.data.city)
   },
 
   /**
@@ -1051,7 +1151,7 @@ Page({
     //   url: '/pages/hourly/hourly',
     // })
   },
-  goMusic() {
+  goMode() {
     var that = this;
     wx.navigateTo({
       url: '../music/music',
@@ -1324,13 +1424,13 @@ Page({
       tap4: false
     })
   },
-  goMusicStart() {
+  goModeStart() {
     var that = this;
     that.setData({
       tap5: true
     })
   },
-  goMusicEnd() {
+  goModeEnd() {
     var that = this;
     that.setData({
       tap5: false
@@ -1348,4 +1448,51 @@ Page({
       tap6: false
     })
   },
+  clickTip() {
+    var that = this;
+    that.setData({
+      isClickTip: true
+    })
+    setTimeout(function() {
+      that.setData({
+        isClickTip: false
+      })
+    }, 500)
+  },
+  clickSunny() {
+    var that = this;
+    that.setData({
+      handleSunny: true
+    })
+    setTimeout(function() {
+      that.setData({
+        handleSunny: false
+      })
+    }, 500)
+  },
+  clickWeather() {
+    var that = this;
+    that.asked();
+    that.setData({
+      handleWeather: true
+    })
+    setTimeout(function() {
+      that.setData({
+        handleWeather: false
+      })
+    }, 250)
+  },
+  clickTips() {
+    var that = this;
+    if (that.data.handleTips) {
+      that.setData({
+        handleTips: false
+      })
+    } else {
+      that.setData({
+        handleTips: true
+      })
+    }
+  },
+
 })

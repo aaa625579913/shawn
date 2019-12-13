@@ -18,15 +18,54 @@
 <view class="container" wx:if="{{isReady}}">
   <!-- 版本号 -->
   <view class="version" bindtap="showVersion" bindtouchstart="showVersionStart" bindtouchend="showVersionEnd" style="margin-top:{{statusBarHeight+44}}px;opacity:{{tap1?'0.8':'1'}}">
-    1.3.1
+    1.3.3
   </view>
   <!-- 主屏幕显示区域 -->
   <view class="weather">
     <view class="city">{{city}}</view>
     <view class="nowinfo">{{cond_txt}}</view>
-    <view class="tmtday" hover-class="hover_tmt" bindtap="asked">{{now_temperature}}°</view>
+    <view class="{{handleWeather?'tmtday-click':'tmtday'}}" bindtap="clickWeather">{{now_temperature}}°</view>
     <!-- 最上方的天气 -->
-    <image wx:if="{{isWeather.length>10}}" src="{{isWeather}}" class="sunny"></image>
+    <image wx:if="{{isWeather.length>10}}" src="{{isWeather}}" class="{{handleSunny?'sunny-click':'sunny'}}" bindtap="clickSunny"></image>
+    <!-- 下雨tips -->
+    <view wx:if="{{isRain}}" class="{{isClickTip?'otherTip':'otherTip-noA'}}" bindtap="clickTip">
+      <image style="height:40rpx;width:40rpx;" src="../../static/images/umbrella.png"></image>
+      <view class="tipText">今天可能会下雨，出门记得带伞喔~</view>
+    </view>
+    <!-- 睡觉tips -->
+    <view wx:if="{{isSleep}}" class="{{isClickTip?'otherTip':'otherTip-noA'}}" bindtap="clickTip">
+      <image style="height:40rpx;width:40rpx;" src="../../static/images/sleep.png"></image>
+      <view class="tipText">这种时候就应该睡觉</view>
+    </view>
+    <!-- 防晒tips -->
+    <view wx:if="{{isSun}}" class="{{isClickTip?'otherTip':'otherTip-noA'}}" bindtap="clickTip">
+      <image style="height:40rpx;width:40rpx;" src="../../static/images/sun-tips.png"></image>
+      <view class="tipText">今天出门要注意防晒噢~</view>
+    </view>
+    <!-- 月亮tips -->
+    <view wx:if="{{isMoon}}" class="{{isClickTip?'otherTip':'otherTip-noA'}}" bindtap="clickTip">
+      <image style="height:40rpx;width:40rpx;" src="../../static/images/moon2.png"></image>
+      <view class="tipText">夜晚降临~</view>
+    </view>
+    <!-- tips -->
+    <view class="tips" wx:if="{{airReady}}">
+      <view class='tipsArea'>
+        <image bindtap="clickTips" style="height:40rpx;width:40rpx;flex-shrink: 0;" src="../../static/images/tips1.png" />
+        <swiper display-multiple-items='{{swiperList.display-multiple-items}}' vertical="{{swiperList.vertical}}" autoplay="{{swiperList.autoplay}}" circular="{{swiperList.circular}}" easing-function="{{swiperList.easing-function}}" duration="{{swiperList.duration}}"
+          interval="{{swiperList.interval}}" class='content' wx:if="{{handleTips}}">
+          <swiper-item>
+            空气质量：{{air}}
+          </swiper-item>
+          <swiper-item>
+            空气质量等级：{{air_level}}
+          </swiper-item>
+          <swiper-item>
+            PM2.5：{{air_pm25}}
+          </swiper-item>
+        </swiper>
+      </view>
+    </view>
+
     <view class="today">
       <view class="week">{{weatherNow[0].week}}</view>
       <view class="today1">今天</view>
@@ -47,7 +86,7 @@
     </block>
   </swiper>
   <!-- 最近7天的天气 -->
-  <view wx:if="{{weather[5].wea.length>10}}" style="position:absolute;margin-top:850rpx;z-index:100;  border-bottom:1rpx solid rgb(255, 255, 255, 0.5);">
+  <view wx:if="{{weather[5].wea.length>10}}" style="position:absolute;margin-top:950rpx;z-index:100;  border-bottom:1rpx solid rgb(255, 255, 255, 0.5);">
     <block wx:for="{{weather}}" wx:key="week">
       <view class="future" bindtap="onWorking">
         <view class="week">{{item.week}}</view>
@@ -60,7 +99,7 @@
     </block>
   </view>
   <!-- 今日详细概况 -->
-  <view style="position:absolute;margin-top:1220rpx;display:flex;justify-content:center;width:750rpx;z-index:100;flex-wrap:wrap;">
+  <view style="position:absolute;margin-top:1320rpx;display:flex;justify-content:center;width:750rpx;z-index:100;flex-wrap:wrap;">
     <view wx:for="{{weaInfo}}" wx:key="index">
       <view class="todayInfo">
         <view class="top">{{item.type}}</view>
@@ -69,9 +108,9 @@
     </view>
   </view>
   <!-- 生活指数蒙层 -->
-  <view wx:if="{{isToast}}" style="position:absolute;margin-top:1780rpx;height:350rpx;width:100%;z-index:200;"></view>
+  <view wx:if="{{isToast}}" style="position:absolute;margin-top:1880rpx;height:350rpx;width:100%;z-index:200;"></view>
   <!-- 生活指数等 -->
-  <view style="position:absolute;margin-top:1780rpx;width:100%;z-index:20;">
+  <view style="position:absolute;margin-top:1880rpx;width:100%;z-index:20;">
     <i-grid class="grid">
       <i-grid-item bindtap="shushi" bindtouchstart="gridStart1" bindtouchend="gridEnd1" style="opacity:{{grid1?'0.8':'1'}}">
         <i-grid-icon>
@@ -119,17 +158,21 @@
       </i-grid-item>
     </i-grid>
   </view>
+  <view class="adContainer" style="position:fixed;bottom:0rpx;z-index:1000">
+    <ad unit-id="adunit-50517e14fc19da69" ad-intervals="30"></ad>
+  </view>
+
 </view>
 <!-- circle模块-闭合 -->
 <view class="{{isBlack?'S_last_view_night':'S_last_view'}}" style="margin-top:{{statusBarHeight+12}}px;opacity:{{tap2?'0.8':'1'}}" wx:if="{{isReady&&isRelease}}" bindtap="goCanvas" bindtouchstart="goCanvasStart" bindtouchend="goCanvasEnd">
   <image src="/static/images/circle.png" style="position:absolute;height:40rpx;width:40rpx;left:48rpx;" />
 </view>
-<!-- music模块-闭合 -->
-<view class="{{isBlack?'S_last_view_night':'S_last_view'}}" style="margin-top:{{statusBarHeight+52}}px;opacity:{{tap5?'0.8':'1'}}" wx:if="{{isReady&&isRelease}}" bindtap="goMusic" bindtouchstart="goMusicStart" bindtouchend="goMusicEnd">
-  <image src="/static/images/music.png" style="position:absolute;height:40rpx;width:40rpx;left:48rpx;" />
+<!-- 模块-闭合 -->
+<view class="{{isBlack?'S_last_view_night':'S_last_view'}}" style="margin-top:{{statusBarHeight+112}}px;opacity:{{tap5?'0.8':'1'}}" wx:if="{{isReady&&isRelease}}" bindtap="goMode" bindtouchstart="goModeStart" bindtouchend="goModeEnd">
+  <image src="/static/images/cd.png" style="position:absolute;height:40rpx;width:40rpx;left:48rpx;" />
 </view>
 <!-- 地区选择模块-闭合 -->
-<view class="{{isBlack?'S_last_view_night':'S_last_view'}}" style="margin-top:{{statusBarHeight+92}}px;opacity:{{tap5?'0.8':'1'}}" wx:if="{{isReady&&isRelease}}" bindtap="goCity" bindtouchstart="goCityStart" bindtouchend="goCityEnd" >
+<view class="{{isBlack?'S_last_view_night':'S_last_view'}}" style="margin-top:{{statusBarHeight+62}}px;opacity:{{tap5?'0.8':'1'}}" wx:if="{{isReady}}" bindtap="goCity" bindtouchstart="goCityStart" bindtouchend="goCityEnd">
   <image src="/static/images/city.png" style="position:absolute;height:40rpx;width:40rpx;left:48rpx;" />
 </view>
 <!-- 点我 -->

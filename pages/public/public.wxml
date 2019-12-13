@@ -26,6 +26,7 @@
 
   <!-- 列表 -->
   <view class="list-block w100" wx:if="{{!isRefreshStatus}}">
+    <!-- <view class="" > -->
     <view class='item-block border-bottom bgff' wx:for="{{listData}}" wx:key="{{index}}">
       <image class='userImg mr10' src='{{item.avatarUrl}}'></image>
       <view class="item-right">
@@ -49,7 +50,16 @@
           </block>
 
         </view>
+
       </view>
+
+      <!-- </view> -->
+      <!-- 点赞区域 -->
+      <!-- <view style="width:100%;display:flex;justify-content:center;align-items:center;margin-bottom:20rpx;">
+        <view style=" background: rgb(223, 219, 219);height:50rpx;width:90%;display:flex;align-items:center;">
+          <text>{{peopleLike}}</text>
+        </view>
+      </view> -->
     </view>
     <!-- 加载更多 -->
     <view wx:if="{{listData.length ? true : false}}">

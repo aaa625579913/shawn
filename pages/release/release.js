@@ -102,7 +102,8 @@ Page({
       content: e.detail.value.Message,
       nickName: nickName,
       avatarUrl: avatarUrl,
-      createTime: db.serverDate()
+      createTime: db.serverDate(),
+      voteList:[]
     }
     if (_obj && !_obj.content) {
       wx.showToast({

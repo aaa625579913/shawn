@@ -108,6 +108,12 @@ Page({
    */
   onLoad: function(options) {
     var that = this;
+    wx.request({
+      url: "https://www.tianqiapi.com/api/?version=v1" + "&city=" + "北京",
+      success(res) {
+        console.log(res)
+      }
+    })
 
   },
 

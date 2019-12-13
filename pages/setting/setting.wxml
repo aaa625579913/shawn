@@ -19,11 +19,17 @@
             <view slot="close">关闭</view> -->
         </i-switch>
     </i-cell>
+        <i-cell title="音乐模式">
+        <i-switch value="{{switch2}}" bind:change="onChange1" slot="footer" size="large">
+            <view slot="open">CD</view>
+            <view slot="close">音轨</view>
+        </i-switch>
+    </i-cell>
     <i-cell title="全球天气">
         <i-switch value="{{switch1}}" disabled="{{true}}" slot="footer"></i-switch>
     </i-cell>
 </i-cell-group>
 
-<image src="/static/images/add.png" catchtap="buttonClick" bindtouchmove="buttonMove" bindtouchstart="buttonStart" bindtouchend="buttonEnd" style="top:{{buttonTop}}px;left:{{buttonLeft}}px;width: 40px;height:40px;border-radius:50px;position:fixed;line-height:40px;font-size:25pt;color:#fff;"/>
+<image src="/static/images/add.png" catchtap="buttonClick" bindtouchmove="buttonMove" bindtouchstart="buttonStart" bindtouchend="buttonEnd" style="top:{{buttonTop}}px;left:{{buttonLeft}}px;width: 40px;height:40px;border-radius:50px;position:fixed;line-height:40px;font-size:25pt;color:#fff;" hidden="true"/>
 
 </view>

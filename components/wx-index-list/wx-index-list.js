@@ -121,16 +121,29 @@ Component({
       let detail = e.currentTarget.dataset.detail;
       let detailCity = e.currentTarget.dataset.detail.name
       console.error("地址:", detailCity)
+      if (detailCity == '点击获取我的位置') {
+        wx.showToast({
+          title: '臣妾做不到啊，还是小主自行选择吧~',
+          duration: 2500,
+          icon: "none"
+        })
+      } else {
+        wx.redirectTo({
+          url: '/pages/index/index?detailCity=' + detailCity,
+        })
+      }
       let myEventOption = {
         bubbles: false, //事件是否冒泡
         composed: false, //事件是否可以穿越组件边界
         capturePhase: false //事件是否拥有捕获阶段
       } // 触发事件的选项
       this.triggerEvent('detail', detail, myEventOption)
-      wx.navigateTo({
-        url: '/pages/index/index?detailCity=' + detailCity,
-      })
 
+
+
+    },
+    bindconfirm() {
+      this._search();
     },
     // 获取搜索输入内容
     input(e) {
@@ -180,7 +193,7 @@ Component({
      * 监听滚动
      */
     scroll(e) {
-      let top = e.detail.scrollTop+88
+      let top = e.detail.scrollTop + 88
       let index = this.currentIndex(top)
       let list = this.data.topGroup
       let distance = top - list[this.data.listIndex]

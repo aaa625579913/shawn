@@ -16,7 +16,7 @@
   </view>
   <!-- 关于 -->
   <view class="middle">
-    <button class="about" bindtap="goAbout" bindtouchstart="goAboutStart"  bindtouchend="goAboutEnd" style="background:{{tap1?'rgba(0, 0, 0, 0.5)':''}}">
+    <button class="about" hover-class="hover_about" bindtap="goAbout" bindtouchstart="goAboutStart"  bindtouchend="goAboutEnd">
       <view class='left'>
         <image src='/static/images/about.png' style="width:48rpx;height:48rpx;"></image>
         <text class='txt'>关于</text>

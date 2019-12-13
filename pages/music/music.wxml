@@ -1,42 +1,44 @@
-<view class="container">
-<view style="position:fixed;width:100%;z-index:999;height:{{statusBarHeight+44}}px;display:flex;justify-content: center;background:#37383f;">
-  <view style="position:absolute;height:70rpx;width:70rpx;left:16rpx;top:{{statusBarHeight+4}}px;display:flex;align-items:center;justify-content:center;" bindtap="goback">
-    <image src='/static/images/back_w.png' style='width:21rpx;height:36rpx;left:28rpx;'></image>
-  </view>
-  <view style='position:absolute;top:{{statusBarHeight+8}}px;color:white;font-size:36rpx;font-weight:bold;z-index:999;'>
-    music
-  </view>
-</view>
-<!-- 音频start -->
-<view class="audioBox {{selected1||course_carrier == 2?'show':'show'}}" style="padding-top:{{statusBarHeight+154}}px;">
-  <!-- 音频图片和标题 -->
-  <view class='top'>
-    <image class="{{isOpen?'start':'musicImg'}}" src='{{course_pictures}}'></image>
-    <view class='top_title'>{{course_name}}</view>
-    <!-- <text class='price'>￥{{courseInfo.course_price}}</text> -->
-  </view>
-  <view class='bottom'>
-    <!-- 进度条 -->
-    <view class='progress'>
-      <slider class='slider' bindchange="sliderChange" activeColor='red' block-size="12" max="{{max}}" value='{{offset}}' />
-      <view class='time'>
-        <text>{{starttime}}</text>
-        <text>{{duration}}</text>
-      </view>
+<view class="container" style="background:url('https://shawn-weather-1258489802.cos.ap-shenzhen-fsi.myqcloud.com/music/bg.png') no-repeat">
+  <view style="position:fixed;width:100%;z-index:999;height:{{statusBarHeight+44}}px;display:flex;justify-content: center;background:#37383f;">
+    <view style="position:absolute;height:70rpx;width:70rpx;left:16rpx;top:{{statusBarHeight+4}}px;display:flex;align-items:center;justify-content:center;" bindtap="goback">
+      <image src='/static/images/back_w.png' style='width:21rpx;height:36rpx;left:28rpx;'></image>
     </view>
-    <!-- 音频控制 -->
-    <view class='control'>
-      <image src="../../static/images/back.png" style="height:80rpx;width:80rpx;" bindtap="prev"></image>
-      <view class='stateBtn' wx:if="{{!isOpen}}" bindtap="listenerButtonPlay">
-      <image src="../../static/images/start.png" style="height:80rpx;width:80rpx;margin-left:10rpx;"></image>
-      </view>
-      <view class='stateBtn' wx:if="{{isOpen}}" bindtap="listenerButtonPause">
-       <image src="../../static/images/pause.png" style="height:80rpx;width:80rpx;"></image>
-      </view>
-      <image src="../../static/images/front.png" style="height:80rpx;width:80rpx;" bindtap="next"></image>
+    <view style='position:absolute;top:{{statusBarHeight+8}}px;color:white;font-size:36rpx;font-weight:bold;z-index:999;'>
+      music
     </view>
   </view>
-</view>
+  <!-- 音频start -->
+  <view class="audioBox" style="padding-top:{{statusBarHeight+154}}px;">
+    <!-- 音频图片和标题 -->
+    <view class='top'>
+      <image wx:if="{{switch2}}" class="{{isOpen?'start':'musicImg'}}" src='{{course_pictures}}'></image>
+      <cover-view class="audioArea" wx:if="{{!switch2}}">
+        <cover-view class="loading-block">
+          <cover-view class="{{isOpen?'music':'musicPause'}}" wx:for="{{24}}" wx:key="{{index}}"></cover-view>
+        </cover-view>
+      </cover-view>
+      <view class='top_title'>{{course_name}}</view>
+    </view>
+    <view class='bottom'>
+      <!-- 进度条 -->
+      <view class="bottom_pt">
+        <text class="{{isChange?'text1_change':'text1'}}">{{starttime}}</text>
+        <slider class="slider" bindchange="sliderChange" bindchanging="circleChange" block-color="#fff" activeColor='rgba(255, 255, 255, 0.6)' backgroundColor="rgba(255, 255, 255, 0.1)" block-size="{{isChange?'16':'12'}}" max="{{max}}" value='{{offset}}' />
+        <text class="text2">{{duration}}</text>
+      </view>
+      <!-- 音频控制 -->
+                   <view class='control'>
+                    <image src="../../static/images/fast_backward_10s.png" style="height:72rpx;width:174rpx;opacity:{{tapPrev?'0.8':'1'}}" bindtap="prev" bindtouchstart="audioPrevStart" bindtouchend="audioPrevEnd"></image>
+                    <view class='stateBtn' wx:if="{{!isOpen}}" bindtap="listenerButtonPlay" bindtouchstart="audioMiddleStart" bindtouchend="audioMiddleEnd">
+                        <image src="../../static/images/audio_play.png" style="height:110rpx;width:110rpx;opacity:{{tapMiddle?'0.8':'1'}}"></image>
+                    </view>
+                    <view class='stateBtn' wx:if="{{isOpen}}" bindtap="listenerButtonPause" bindtouchstart="audioMiddleStart" bindtouchend="audioMiddleEnd">
+                        <image src="../../static/images/audio_pause.png" style="height:110rpx;width:110rpx;opacity:{{tapMiddle?'0.8':'1'}}"></image>
+                    </view>
+                    <image src="../../static/images/fast_forward_10s.png" style="height:72rpx;width:174rpx;opacity:{{tapNext?'0.8':'1'}}" bindtap="next" bindtouchstart="audioNextStart" bindtouchend="audioNextEnd"></image>
+                </view>
+    </view>
+  </view>
 
 </view>
 <!-- 音频end -->

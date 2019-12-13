@@ -5,6 +5,10 @@ page {
   overflow-x: hidden;
   font-family: 'PingFang SC';
 }
+.adContainer{
+  height: -1000rpx;
+  width: 100%;
+}
 .cover {
   position: fixed;
   height: 100vh;
@@ -131,6 +135,14 @@ page {
   z-index: 10;
 }
 
+.weather .sunny-click {
+  height: 100rpx;
+  width: 100rpx;
+  position: absolute;
+  z-index: 10;
+  animation: tipsAnimation 0.5s linear 1;
+}
+
 .weather .city {
   position: absolute;
   display: flex;
@@ -177,17 +189,30 @@ page {
   font-weight: 400;
   color: #fff;
 }
-.weather .hover_tmt {
-  transform: scale(0.95);
+
+.weather .tmtday-click {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border-radius: 50rpx;
+  height: 200rpx;
+  width: 250rpx;
+  margin-top: 240rpx;
+  font-family: 'PingFang SC';
+  font-size: 120rpx;
+  font-weight: 400;
+  color: #fff;
+  animation: tmtAnimation 0.25s linear 1;
 }
 
 .weather .today {
   position: absolute;
-  /* border: 1rpx solid #acadb3; */
   height: 100rpx;
   width: 750rpx;
   display: flex;
-  margin-top: 500rpx;
+  margin-top: 600rpx;
   z-index: 20;
 }
 
@@ -245,7 +270,7 @@ page {
 
 .swiper {
   position: absolute;
-  margin-top: 600rpx;
+  margin-top: 700rpx;
   width: 100%;
   height: 250rpx;
   z-index: 5;
@@ -381,6 +406,7 @@ page {
   box-shadow: 10rpx 10rpx 12rpx rgba(37, 33, 27, 0.4);
   border-radius: 50rpx;
 }
+
 .S_last_view_night {
   display: flex;
   align-items: center;
@@ -395,6 +421,7 @@ page {
   box-shadow: 2rpx 2rpx 5rpx rgba(250, 250, 250, 0.6);
   border-radius: 50rpx;
 }
+
 .S_last_btn {
   margin-left: 56rpx;
   font-family: 'PingFang SC';
@@ -561,4 +588,87 @@ page {
 .grid {
   width: 750rpx;
   /* border-top: 1rpx solid rgb(255, 255, 255, 0.5); */
+}
+
+/* tips */
+
+.otherTip {
+  position: absolute;
+  height: 40rpx;
+  /* right: 30rpx; */
+  display: flex;
+  margin-top: 450rpx;
+  z-index: 20;
+  animation: tipsAnimation 0.5s linear 1;
+}
+
+.otherTip-noA {
+  position: absolute;
+  height: 40rpx;
+  /* right: 30rpx; */
+  display: flex;
+  margin-top: 450rpx;
+  z-index: 20;
+}
+
+/* 放大动画 */
+
+@keyframes tipsAnimation {
+  0%, 100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+}
+/* 缩小动画 */
+
+@keyframes tmtAnimation {
+  0%, 100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(0.9);
+  }
+}
+.tipText {
+  font-size: 26rpx;
+  line-height: 40rpx;
+  color: #fff;
+  padding: 0rpx 20rpx;
+}
+
+.tips {
+  position: absolute;
+  height: 40rpx;
+  /* width: 220rpx; */
+  left: 30rpx;
+  display: flex;
+  margin-top: 570rpx;
+  z-index: 20;
+}
+
+.tipsArea {
+  display: flex;
+  align-items: center;
+  width: 280rpx;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.content {
+  font-size: 26rpx;
+  line-height: 40rpx;
+  height: 40rpx;
+  width: 100%;
+  color: #fff;
+  padding: 0rpx 10rpx;
+}
+
+swiper-item {
+  /* display: flex;
+  align-items: center; */
+  text-align: center;
 }

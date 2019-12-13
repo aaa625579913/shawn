@@ -9,7 +9,6 @@ Page({
    */
   data: {
     statusBarHeight: getApp().globalData.statusBarHeight,
-    switch1:app.globalData.coverSet,
     buttonTop: 400,
     buttonLeft: 320,
     windowHeight: '',
@@ -23,6 +22,16 @@ Page({
     wx.setStorage({
       key: 'switch1',
       data: this.data.switch1,
+    })
+  },
+  onChange1(event) {
+    const detail = event.detail;
+    this.setData({
+      'switch2': detail.value
+    })
+    wx.setStorage({
+      key: 'switch2',
+      data: this.data.switch2,
     })
   },
   /**
@@ -101,8 +110,10 @@ Page({
    */
   onShow: function () {
     const switch1 = wx.getStorageSync('switch1')
+    const switch2 = wx.getStorageSync('switch2')
     this.setData({
-      switch1: switch1
+      switch1: switch1,
+      switch2: switch2,
     })
   },
   goback() {
